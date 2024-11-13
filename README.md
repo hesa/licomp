@@ -1,0 +1,2 @@
+# licomp
+License Compatibility Interface
