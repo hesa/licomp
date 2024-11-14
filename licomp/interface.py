@@ -7,38 +7,10 @@ class ObligationTrigger(Enum):
     LOCAL_USE = 4
     PROVIDE_SERVICE = 5
     PROVIDE_WEBUI = 6
-    
-class ModifiedTrigger(Enum):
-    MODIFIED = 1
-    UNMODIFIED = 2
 
-class CompatibilityStatus(Enum):
-    COMPATIBLE = 1
-    INCOMPATIBLE = 2
-    DEPENDS = 3
-    UNKNOWN = 4
-    UNSUPPORTED = 5
-
-class Status(Enum):
-    SUCCESS = 1
-    FAILURE = 10
-
-class LicompException(Exception):
-    pass
-
-class Licomp:
-
-    def __init__(self):
-        self.obligation_trigger_strings = {
-            ObligationTrigger.SOURCE_DIST: "source-code-distribution",
-            ObligationTrigger.BIN_DIST: "binary-distribution",
-            ObligationTrigger.SNIPPET: "snippet",
-            ObligationTrigger.LOCAL_USE: "local-use",
-            ObligationTrigger.PROVIDE_SERVICE: "provide-service",
-            ObligationTrigger.PROVIDE_WEBUI: "provide-webui"
-        }
-    
-        self.obligation_string_triggers = {
+    @staticmethod
+    def string_to_trigger(trigger_string):
+        map = {
             "source-code-distribution":  ObligationTrigger.SOURCE_DIST,
             "binary-distribution":       ObligationTrigger.BIN_DIST,
             "snippet":                   ObligationTrigger.SNIPPET,
@@ -46,25 +18,77 @@ class Licomp:
             "provide-service":           ObligationTrigger.PROVIDE_SERVICE,
             "provide-webui":             ObligationTrigger.PROVIDE_WEBUI,
         }
+        return map[trigger_string]
+
+    @staticmethod
+    def trigger_to_string(trigger):
+        map = {
+            ObligationTrigger.SOURCE_DIST: "source-code-distribution",
+            ObligationTrigger.BIN_DIST: "binary-distribution",
+            ObligationTrigger.SNIPPET: "snippet",
+            ObligationTrigger.LOCAL_USE: "local-use",
+            ObligationTrigger.PROVIDE_SERVICE: "provide-service",
+            ObligationTrigger.PROVIDE_WEBUI: "provide-webui"
+        }
+        return map[trigger]
     
-        self.modified_strings = {
+class ModifiedTrigger(Enum):
+    MODIFIED = 1
+    UNMODIFIED = 2
+    @staticmethod
+    def modified_to_string(modified):
+        map = {
             ModifiedTrigger.MODIFIED: "modified",
             ModifiedTrigger.UNMODIFIED: "unmodified"
         }
-    
-        self.compatibility_status_strings = {
-            CompatibilityStatus.COMPATIBLE:   "Yes",
-            CompatibilityStatus.INCOMPATIBLE: "No",
-            CompatibilityStatus.DEPENDS:      "Depends",
-            CompatibilityStatus.UNKNOWN:      "Unknown",
-            CompatibilityStatus.UNSUPPORTED:  "Unsupported",
+        return map[modified]
+
+class CompatibilityStatus(Enum):
+    COMPATIBLE = 1
+    INCOMPATIBLE = 2
+    DEPENDS = 3
+    UNKNOWN = 4
+    UNSUPPORTED = 5
+    @staticmethod
+    def compatibility_to_string(compatibility):
+        map = {
+            CompatibilityStatus.COMPATIBLE:   "yes",
+            CompatibilityStatus.INCOMPATIBLE: "no",
+            CompatibilityStatus.DEPENDS:      "depends",
+            CompatibilityStatus.UNKNOWN:      "unknown",
+            CompatibilityStatus.UNSUPPORTED:  "unsupported",
             None:  None
         }
-        
-        self.status_strings = {
-            Status.SUCCESS: "success",
-            Status.FAILURE: "fail"
+        return map[compatibility]
+    
+
+class Status(Enum):
+    SUCCESS = 1
+    FAILURE = 10
+
+    @staticmethod
+    def string_to_status(status_string):
+        map = {
+            "success": Status.SUCCESS,
+            "failue": Status.FAILURE,
         }
+        return map[status_string]
+
+    @staticmethod
+    def status_to_string(status):
+        map = {
+            Status.SUCCESS: "success",
+            Status.FAILURE: "failue",
+        }
+        return map[status]
+
+class LicompException(Exception):
+    pass
+
+class Licomp:
+
+    def __init__(self):
+        pass
 
     def name(self):
         return None
@@ -72,12 +96,6 @@ class Licomp:
     def version(self):
         return None
     
-    def obligation_trigger_string(self, trigger):
-        return self.obligation_trigger_strings[trigger]
-        
-    def obligation_string_trigger(self, trigger_str):
-        return self.obligation_string_triggers[trigger_str]
-        
     def outbound_inbound_compatibility(self,
                                        outbound,
                                        inbound,
@@ -90,7 +108,7 @@ class Licomp:
                                                             trigger, modified)
             compat_status = response['compatibility_status']
             explanation = response['explanation']
-            ret =  self.compatibility_reply(Status.FAILURE,
+            ret =  self.compatibility_reply(Status.SUCCESS,
                                             outbound,
                                             inbound,
                                             trigger,
@@ -119,12 +137,12 @@ class Licomp:
                             explanation):
 
         return {
-            "status": self.status_strings[status],
+            "status": Status.status_to_string(status),
             "outbound": outbound,
             "inbound": inbound,
-            "trigger": self.obligation_trigger_strings[trigger],
-            "modified": self.modified_strings[modified],
-            "compatibility_status": self.compatibility_status_strings[compatibility_status],
+            "trigger": ObligationTrigger.trigger_to_string(trigger),
+            "modified": ModifiedTrigger.modified_to_string(modified),
+            "compatibility_status": CompatibilityStatus.compatibility_to_string(compatibility_status),
             "explanation": explanation,
             "resource_name": self.name(),
             "resource_version": self.version(),
@@ -132,7 +150,7 @@ class Licomp:
 
     def check_trigger(self,trigger):
         if trigger not in self.supported_triggers():
-            explanation = f'{self.obligation_trigger_string(trigger)} not supported'
+            explanation = f'Trigger "{ObligationTrigger.trigger_to_string(trigger)}" not supported'
             raise LicompException(explanation)
         
 
@@ -171,7 +189,6 @@ class Licomp:
 
     def trigger_supported(self, trigger):
         return trigger in self.supported_triggers()
-
     
     def outbound_inbound_reply(self, compat_status, explanation):
         """
