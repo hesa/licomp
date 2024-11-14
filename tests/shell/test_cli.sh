@@ -2,7 +2,7 @@
 
 dummy_cli()
 {
-    PYTHONPATH=../licomp:. python3 tests/python/dummy_main.py $*
+    PYTHONPATH=. python3 tests/python/dummy_main.py $*
 }
 
 check_resp()
@@ -39,8 +39,8 @@ run_list_test()
 
 
 
-run_comp_test "Yes" "verify -il BSD-3-Clause -ol GPL-2.0-only"
-run_comp_test "No" "verify -il GPL-2.0-only -ol BSD-3-Clause"
+run_comp_test "yes" "verify -il BSD-3-Clause -ol GPL-2.0-only"
+run_comp_test "no" "verify -il GPL-2.0-only -ol BSD-3-Clause"
 
 run_comp_test "null" "verify -il GPL-2.0-only -ol DO_NOT_EXIST"
 run_comp_test "null" "verify -il DO_NOT_EXIST -ol BSD-3-Clause"
