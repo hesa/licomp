@@ -4,17 +4,18 @@ import logging
 import sys
 
 from licomp.interface import ObligationTrigger
+from licomp.interface import Status
 
 
 class LicompFormatter():
 
-    def format_compatibility(self, compatibility):
+    def format_compatibility(self, compatibility, verbose=False):
         return None
 
-    def format_licenses(self, licenses):
+    def format_licenses(self, licenses, verbose=False):
         return None
 
-    def format_error(self, error_string):
+    def format_error(self, error_string, verbose=False):
         return None
 
     @staticmethod
@@ -26,16 +27,16 @@ class LicompFormatter():
     
 class JsonLicompFormatter():
 
-    def format_compatibility(self, compatibility):
+    def format_compatibility(self, compatibility, verbose=False):
         return json.dumps(compatibility, indent=4)
 
-    def format_licenses(self, licenses):
+    def format_licenses(self, licenses, verbose=False):
         return json.dumps(licenses, indent=4)
 
-    def format_triggers(self, triggers):
+    def format_triggers(self, triggers, verbose=False):
         return json.dumps(triggers, indent=4)
 
-    def format_error(self, error_string):
+    def format_error(self, error_string, verbose=False):
         return json.dumps({
             'status': 'failure',
             'message': error_string
@@ -43,22 +44,37 @@ class JsonLicompFormatter():
     
 class TextLicompFormatter():
 
-    def format_compatibility(self, compatibility):
-        return compatibility['compatibility_status']
+    def format_compatibility(self, compatibility, verbose=False):
+        status = compatibility['status']
+        status_ok = Status.string_to_status(status) == Status.SUCCESS
+        compat = compatibility['compatibility_status']
+        explanation = compatibility['explanation']
+        if not status_ok:
+            return f'Failure: {explanation}'
+        if not verbose:
+            return compat
+        res = []
+        res.append(f'Compatibility: {status}')
+        res.append(f'Explanation:   {explanation}')
+        res.append(f'Trigger:       {compatibility["trigger"]}')
+        res.append(f'Resource:      {compatibility["resource_name"]}, {compatibility["resource_version"]}')
+                
+        return '\n'.join(res)
 
-    def format_licenses(self, licenses):
+    def format_licenses(self, licenses, verbose=False):
         return ', '.join(licenses)
 
-    def format_triggers(self, triggers):
+    def format_triggers(self, triggers, verbose=False):
         return ', '.join(triggers)
 
-    def format_error(self, error_string):
+    def format_error(self, error_string, verbose=False):
         return f'Error: {error_string}'
     
 class LicompParser():
 
-    def __init__(self, licomp, name, description, epilog):
+    def __init__(self, licomp, name, description, epilog, default_trigger):
         self.licomp = licomp
+        self.default_trigger = default_trigger
         self.parser = argparse.ArgumentParser(
             prog=name,
             description=description,
@@ -79,8 +95,8 @@ class LicompParser():
 
         self.parser.add_argument('--trigger', '-t',
                                  type=str,
-                                 default=licomp.obligation_trigger_string(ObligationTrigger.BIN_DIST),
-                                 help=f'Provisioning trigger, default: {licomp.obligation_trigger_string(ObligationTrigger.BIN_DIST)}')
+                                 default=ObligationTrigger.trigger_to_string(self.default_trigger),
+                                 help=f'Provisioning trigger, default: {ObligationTrigger.trigger_to_string(self.default_trigger)}')
 
         subparsers = self.parser.add_subparsers(help='Sub commands')
         
@@ -102,18 +118,18 @@ class LicompParser():
         inbound = self.args.in_license
         outbound = self.args.out_license
         try:
-            trigger = self.licomp.obligation_string_trigger(args.trigger)
+            trigger = ObligationTrigger.string_to_trigger(args.trigger)
         except:
             return None, LicompFormatter.formatter(self.args.output_format).format_error(f'Trigger {args.trigger} not supported.')
         res = self.licomp.outbound_inbound_compatibility(outbound, inbound, trigger=trigger)
-        return LicompFormatter.formatter(self.args.output_format).format_compatibility(res), None
+        return LicompFormatter.formatter(self.args.output_format).format_compatibility(res, args.verbose), None
         
     def supported_licenses(self, args):
         res = self.licomp.supported_licenses()
         return LicompFormatter.formatter(self.args.output_format).format_licenses(res), None
         
     def supported_triggers(self, args):
-        triggers = [self.licomp.obligation_trigger_string(x) for x in self.licomp.supported_triggers()]
+        triggers = [ObligationTrigger.trigger_to_string(x) for x in self.licomp.supported_triggers()]
         return LicompFormatter.formatter(self.args.output_format).format_triggers(triggers), None
 
     def add_argument(self, *args, **kwargs):
