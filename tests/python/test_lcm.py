@@ -19,10 +19,12 @@ def test_is_supported():
 def test_compat():
     ret = dl.outbound_inbound_compatibility("GPL-2.0-only", "BSD-3-Clause")
     logging.debug("ret: " + str(ret))
-    assert ret['compatibility_status'] == "Yes"
+    assert ret['compatibility_status'] == "yes"
+    assert ret['status'] == "success"
 
 def test_incompat():
     ret = dl.outbound_inbound_compatibility("BSD-3-Clause", "GPL-2.0-only")
     logging.debug("ret: " + str(ret))
-    assert ret['compatibility_status'] == "No"
+    assert ret['compatibility_status'] == "no"
+    assert ret['status'] == "success"
 
