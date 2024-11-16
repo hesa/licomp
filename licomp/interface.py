@@ -88,7 +88,7 @@ class Status(Enum):
     def string_to_status(status_string):
         _map = {
             "success": Status.SUCCESS,
-            "failue": Status.FAILURE,
+            "failure": Status.FAILURE,
         }
         return _map[status_string]
 
@@ -96,7 +96,7 @@ class Status(Enum):
     def status_to_string(status):
         _map = {
             Status.SUCCESS: "success",
-            Status.FAILURE: "failue",
+            Status.FAILURE: "failure",
         }
         return _map[status]
 
