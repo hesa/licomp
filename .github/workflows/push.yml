@@ -16,9 +16,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: Check licenses
-      run: |
-        make check_license_files
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v5
       with:
@@ -30,7 +27,6 @@ jobs:
         reuse --suppress-deprecation lint
     - name: Install dependencies
       run: |
-        #python3 -m pip install --upgrade pip
         cd python
         pip install -r requirements.txt
         pip install -r requirements-dev.txt
