@@ -5,7 +5,6 @@
 import setuptools
 from licomp.config import licomp_version
 from licomp.config import licomp_description
-from licomp.config import licomp_epilog
 from licomp.config import licomp_module_name
 
 
@@ -18,28 +17,28 @@ with open('requirements-dev.txt') as f:
     requirements_dev = f.read().splitlines()
 
 setuptools.setup(
-    name = licomp_module_name,
-    version = licomp_version,
-    author = "Henrik Sanklef",
-    author_email = "hesa@sandklef.com",
-    description = "",
-    long_description = licomp_description,
-    long_description_content_type = "text/markdown",
-    license_files = ('LICENSES/GPL-3.0-or-later.txt',),
-    url = "https://github.com/hesa/licomp",
-    packages = ['licomp'],
-    entry_points = {
+    name=licomp_module_name,
+    version=licomp_version,
+    author="Henrik Sanklef",
+    author_email="hesa@sandklef.com",
+    description="",
+    long_description=licomp_description,
+    long_description_content_type="text/markdown",
+    license_files=('LICENSES/GPL-3.0-or-later.txt',),
+    url="https://github.com/hesa/licomp",
+    packages=['licomp'],
+    entry_points={
         "console_scripts": [
         ],
     },
-    package_data = {
+    package_data={
         'licomp': ['var/*'],
     },
-    install_requires = requirements,
-    extras_require = {
+    install_requires=requirements,
+    extras_require={
         'dev': requirements_dev,
     },
-    classifiers = [
+    classifiers=[
         "Development Status :: 4 - Beta",
         "Environment :: Console",
         "Intended Audience :: Developers",
@@ -56,5 +55,5 @@ setuptools.setup(
         "Programming Language :: Python :: 3",
         "Topic :: Software Development :: Quality Assurance",
     ],
-    python_requires = '>=3.6',
+    python_requires='>=3.6',
 )

@@ -16,9 +16,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: Check licenses
-      run: |
-        make check_license_files
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v5
       with:
@@ -30,22 +27,18 @@ jobs:
         reuse --suppress-deprecation lint
     - name: Install dependencies
       run: |
-        #python3 -m pip install --upgrade pip
-        cd python
         pip install -r requirements.txt
         pip install -r requirements-dev.txt
     - name: Build
-      run: cd python && python3 setup.py build sdist
+      run: python3 setup.py build sdist
     - name: Lint
       run: |
-        cd python
         flake8
     - name: Install
-      run: cd python && python3 setup.py install
+      run: python3 setup.py install
     - name: Test
       run: |
         JUNIT_REPORT=1 python3 -m pytest 
-        make check_license_schema
     - name: CLI check
       run: |
         tests/shell/test_cli.sh

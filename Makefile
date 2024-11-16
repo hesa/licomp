@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2023 Henrik Sandklef
+# SPDX-FileCopyrightText: 2024 Henrik Sandklef
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -23,3 +23,9 @@ test:
 
 install:
 	pip install .
+
+reuse:
+	reuse lint
+
+lint:
+	flake8

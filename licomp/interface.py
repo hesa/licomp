@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2021 Henrik Sandklef
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 from enum import Enum
 
 class ObligationTrigger(Enum):
@@ -10,38 +14,39 @@ class ObligationTrigger(Enum):
 
     @staticmethod
     def string_to_trigger(trigger_string):
-        map = {
-            "source-code-distribution":  ObligationTrigger.SOURCE_DIST,
-            "binary-distribution":       ObligationTrigger.BIN_DIST,
-            "snippet":                   ObligationTrigger.SNIPPET,
-            "local-use":                 ObligationTrigger.LOCAL_USE,
-            "provide-service":           ObligationTrigger.PROVIDE_SERVICE,
-            "provide-webui":             ObligationTrigger.PROVIDE_WEBUI,
+        _map = {
+            "source-code-distribution": ObligationTrigger.SOURCE_DIST,
+            "binary-distribution": ObligationTrigger.BIN_DIST,
+            "snippet": ObligationTrigger.SNIPPET,
+            "local-use": ObligationTrigger.LOCAL_USE,
+            "provide-service": ObligationTrigger.PROVIDE_SERVICE,
+            "provide-webui": ObligationTrigger.PROVIDE_WEBUI,
         }
-        return map[trigger_string]
+        return _map[trigger_string]
 
     @staticmethod
     def trigger_to_string(trigger):
-        map = {
+        _map = {
             ObligationTrigger.SOURCE_DIST: "source-code-distribution",
             ObligationTrigger.BIN_DIST: "binary-distribution",
             ObligationTrigger.SNIPPET: "snippet",
             ObligationTrigger.LOCAL_USE: "local-use",
             ObligationTrigger.PROVIDE_SERVICE: "provide-service",
-            ObligationTrigger.PROVIDE_WEBUI: "provide-webui"
+            ObligationTrigger.PROVIDE_WEBUI: "provide-webui",
         }
-        return map[trigger]
-    
+        return _map[trigger]
+
 class ModifiedTrigger(Enum):
     MODIFIED = 1
     UNMODIFIED = 2
+
     @staticmethod
     def modified_to_string(modified):
-        map = {
+        _map = {
             ModifiedTrigger.MODIFIED: "modified",
-            ModifiedTrigger.UNMODIFIED: "unmodified"
+            ModifiedTrigger.UNMODIFIED: "unmodified",
         }
-        return map[modified]
+        return _map[modified]
 
 
 class CompatibilityStatus(Enum):
@@ -50,29 +55,30 @@ class CompatibilityStatus(Enum):
     DEPENDS = 3
     UNKNOWN = 4
     UNSUPPORTED = 5
+
     @staticmethod
     def string_to_compat_status(compat_status_string):
-        map = {
+        _map = {
             "yes": CompatibilityStatus.COMPATIBLE,
             "no": CompatibilityStatus.INCOMPATIBLE,
             "depends": CompatibilityStatus.DEPENDS,
             "unknown": CompatibilityStatus.UNKNOWN,
             "unsupported": CompatibilityStatus.UNSUPPORTED,
-            None:  None
+            None: None,
         }
-        return map[compat_status_string]
+        return _map[compat_status_string]
 
     @staticmethod
     def compat_status_to_string(compat_status):
-        map = {
-            CompatibilityStatus.COMPATIBLE:   "yes",
+        _map = {
+            CompatibilityStatus.COMPATIBLE: "yes",
             CompatibilityStatus.INCOMPATIBLE: "no",
-            CompatibilityStatus.DEPENDS:      "depends",
-            CompatibilityStatus.UNKNOWN:      "unknown",
-            CompatibilityStatus.UNSUPPORTED:  "unsupported",
-            None:  None
+            CompatibilityStatus.DEPENDS: "depends",
+            CompatibilityStatus.UNKNOWN: "unknown",
+            CompatibilityStatus.UNSUPPORTED: "unsupported",
+            None: None,
         }
-        return map[compat_status]
+        return _map[compat_status]
 
 class Status(Enum):
     SUCCESS = 1
@@ -80,19 +86,19 @@ class Status(Enum):
 
     @staticmethod
     def string_to_status(status_string):
-        map = {
+        _map = {
             "success": Status.SUCCESS,
             "failue": Status.FAILURE,
         }
-        return map[status_string]
+        return _map[status_string]
 
     @staticmethod
     def status_to_string(status):
-        map = {
+        _map = {
             Status.SUCCESS: "success",
             Status.FAILURE: "failue",
         }
-        return map[status]
+        return _map[status]
 
 class LicompException(Exception):
     pass
@@ -101,13 +107,13 @@ class Licomp:
 
     def __init__(self):
         pass
-    
+
     def name(self):
         return None
-    
+
     def version(self):
         return None
-    
+
     def outbound_inbound_compatibility(self,
                                        outbound,
                                        inbound,
@@ -120,13 +126,13 @@ class Licomp:
                                                             trigger, modified)
             compat_status = response['compatibility_status']
             explanation = response['explanation']
-            ret =  self.compatibility_reply(Status.SUCCESS,
-                                            outbound,
-                                            inbound,
-                                            trigger,
-                                            modified,
-                                            compat_status,
-                                            explanation)
+            ret = self.compatibility_reply(Status.SUCCESS,
+                                           outbound,
+                                           inbound,
+                                           trigger,
+                                           modified,
+                                           compat_status,
+                                           explanation)
             return ret
         except AttributeError as e:
             raise e
@@ -160,11 +166,10 @@ class Licomp:
             "resource_version": self.version(),
         }
 
-    def check_trigger(self,trigger):
+    def check_trigger(self, trigger):
         if trigger not in self.supported_triggers():
             explanation = f'Trigger "{ObligationTrigger.trigger_to_string(trigger)}" not supported'
             raise LicompException(explanation)
-        
 
     def failure_reply(self,
                       exception,
@@ -177,7 +182,7 @@ class Licomp:
         if exception:
             exception_type = type(exception)
             if exception_type == KeyError:
-                unsupported = ', '.join([x for x in [inbound, outbound] if not self.license_supported(x) ])
+                unsupported = ', '.join([x for x in [inbound, outbound] if not self.license_supported(x)])
                 explanation = f'Unsupported license(s) found: {unsupported}'
             if exception_type == LicompException:
                 explanation = str(exception)
@@ -201,16 +206,15 @@ class Licomp:
 
     def trigger_supported(self, trigger):
         return trigger in self.supported_triggers()
-    
-    def outbound_inbound_reply(self, compat_status, explanation):
+
+    def _outbound_inbound_compatibility(self, compat_status, explanation):
         """
         must be implemented by subclasses
         """
         return None
-    
+
     def outbound_inbound_reply(self, compat_status, explanation):
         return {
             'compatibility_status': compat_status,
-            'explanation': explanation
+            'explanation': explanation,
         }
-

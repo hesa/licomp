@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2021 Henrik Sandklef
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 import argparse
 import json
 import logging
@@ -19,12 +23,12 @@ class LicompFormatter():
         return None
 
     @staticmethod
-    def formatter(format):
-        if format.lower() == 'json':
+    def formatter(fmt):
+        if fmt.lower() == 'json':
             return JsonLicompFormatter()
-        if format.lower() == 'text':
+        if fmt.lower() == 'text':
             return TextLicompFormatter()
-    
+
 class JsonLicompFormatter():
 
     def format_compatibility(self, compatibility, verbose=False):
@@ -39,9 +43,9 @@ class JsonLicompFormatter():
     def format_error(self, error_string, verbose=False):
         return json.dumps({
             'status': 'failure',
-            'message': error_string
+            'message': error_string,
         }, indent=4)
-    
+
 class TextLicompFormatter():
 
     def format_compatibility(self, compatibility, verbose=False):
@@ -58,7 +62,6 @@ class TextLicompFormatter():
         res.append(f'Explanation:   {explanation}')
         res.append(f'Trigger:       {compatibility["trigger"]}')
         res.append(f'Resource:      {compatibility["resource_name"]}, {compatibility["resource_version"]}')
-                
         return '\n'.join(res)
 
     def format_licenses(self, licenses, verbose=False):
@@ -69,7 +72,7 @@ class TextLicompFormatter():
 
     def format_error(self, error_string, verbose=False):
         return f'Error: {error_string}'
-    
+
 class LicompParser():
 
     def __init__(self, licomp, name, description, epilog, default_trigger):
@@ -99,7 +102,7 @@ class LicompParser():
                                  help=f'Provisioning trigger, default: {ObligationTrigger.trigger_to_string(self.default_trigger)}')
 
         subparsers = self.parser.add_subparsers(help='Sub commands')
-        
+
         parser_v = subparsers.add_parser(
             'verify', help='Verify license compatibility between for a package or an outbound license expression against inbound license expression.')
         parser_v.set_defaults(which="verify", func=self.verify)
@@ -107,7 +110,7 @@ class LicompParser():
         parser_v.add_argument('--inbound-license', '-il', type=str, dest='in_license', help='Inbound license expression', default=None)
 
         parser_sl = subparsers.add_parser(
-            'supported-licenses',help='List supported licenses.')
+            'supported-licenses', help='List supported licenses.')
         parser_sl.set_defaults(which="supported_licenses", func=self.supported_licenses)
 
         parser_st = subparsers.add_parser(
@@ -119,15 +122,15 @@ class LicompParser():
         outbound = self.args.out_license
         try:
             trigger = ObligationTrigger.string_to_trigger(args.trigger)
-        except:
+        except KeyError:
             return None, LicompFormatter.formatter(self.args.output_format).format_error(f'Trigger {args.trigger} not supported.')
         res = self.licomp.outbound_inbound_compatibility(outbound, inbound, trigger=trigger)
         return LicompFormatter.formatter(self.args.output_format).format_compatibility(res, args.verbose), None
-        
+
     def supported_licenses(self, args):
         res = self.licomp.supported_licenses()
         return LicompFormatter.formatter(self.args.output_format).format_licenses(res), None
-        
+
     def supported_triggers(self, args):
         triggers = [ObligationTrigger.trigger_to_string(x) for x in self.licomp.supported_triggers()]
         return LicompFormatter.formatter(self.args.output_format).format_triggers(triggers), None
@@ -149,7 +152,7 @@ class LicompParser():
             sys.exit(0)
 
         # if missing command
-        if not 'func' in vars(self.args):
+        if 'func' not in vars(self.args):
             print("Error: missing command", file=sys.stderr)
             self.parser.print_help(file=sys.stderr)
             sys.exit(1)
@@ -157,7 +160,6 @@ class LicompParser():
         # if --verbose
         if self.args.verbose:
             logging.getLogger().setLevel(logging.DEBUG)
-
 
         # execute command
         res, err = self.args.func(self.args)
