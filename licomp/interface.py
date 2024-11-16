@@ -43,6 +43,7 @@ class ModifiedTrigger(Enum):
         }
         return map[modified]
 
+
 class CompatibilityStatus(Enum):
     COMPATIBLE = 1
     INCOMPATIBLE = 2
@@ -50,7 +51,19 @@ class CompatibilityStatus(Enum):
     UNKNOWN = 4
     UNSUPPORTED = 5
     @staticmethod
-    def compatibility_to_string(compatibility):
+    def string_to_compat_status(compat_status_string):
+        map = {
+            "yes": CompatibilityStatus.COMPATIBLE,
+            "no": CompatibilityStatus.INCOMPATIBLE,
+            "depends": CompatibilityStatus.DEPENDS,
+            "unknown": CompatibilityStatus.UNKNOWN,
+            "unsupported": CompatibilityStatus.UNSUPPORTED,
+            None:  None
+        }
+        return map[compat_status_string]
+
+    @staticmethod
+    def compat_status_to_string(compat_status):
         map = {
             CompatibilityStatus.COMPATIBLE:   "yes",
             CompatibilityStatus.INCOMPATIBLE: "no",
@@ -59,8 +72,7 @@ class CompatibilityStatus(Enum):
             CompatibilityStatus.UNSUPPORTED:  "unsupported",
             None:  None
         }
-        return map[compatibility]
-    
+        return map[compat_status]
 
 class Status(Enum):
     SUCCESS = 1
@@ -89,7 +101,7 @@ class Licomp:
 
     def __init__(self):
         pass
-
+    
     def name(self):
         return None
     
@@ -142,7 +154,7 @@ class Licomp:
             "inbound": inbound,
             "trigger": ObligationTrigger.trigger_to_string(trigger),
             "modified": ModifiedTrigger.modified_to_string(modified),
-            "compatibility_status": CompatibilityStatus.compatibility_to_string(compatibility_status),
+            "compatibility_status": CompatibilityStatus.compat_status_to_string(compatibility_status),
             "explanation": explanation,
             "resource_name": self.name(),
             "resource_version": self.version(),
