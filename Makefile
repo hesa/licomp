@@ -26,3 +26,6 @@ install:
 
 reuse:
 	reuse lint
+
+lint:
+	flake8
