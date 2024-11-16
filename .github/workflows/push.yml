@@ -27,17 +27,15 @@ jobs:
         reuse --suppress-deprecation lint
     - name: Install dependencies
       run: |
-        cd python
         pip install -r requirements.txt
         pip install -r requirements-dev.txt
     - name: Build
-      run: cd python && python3 setup.py build sdist
+      run: python3 setup.py build sdist
     - name: Lint
       run: |
-        cd python
         flake8
     - name: Install
-      run: cd python && python3 setup.py install
+      run: python3 setup.py install
     - name: Test
       run: |
         JUNIT_REPORT=1 python3 -m pytest 
