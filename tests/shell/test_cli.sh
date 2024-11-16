@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# SPDX-FileCopyrightText: 2021 Henrik Sandklef
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 dummy_cli()
 {
     PYTHONPATH=. python3 tests/python/dummy_main.py $*

@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2021 Henrik Sandklef
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 import argparse
 import json
 import logging
