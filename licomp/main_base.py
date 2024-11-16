@@ -58,7 +58,7 @@ class TextLicompFormatter():
         if not verbose:
             return compat
         res = []
-        res.append(f'Compatibility: {status}')
+        res.append(f'Compatibility: {compat}')
         res.append(f'Explanation:   {explanation}')
         res.append(f'Trigger:       {compatibility["trigger"]}')
         res.append(f'Resource:      {compatibility["resource_name"]}, {compatibility["resource_version"]}')
