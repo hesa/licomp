@@ -7,7 +7,8 @@ import json
 import logging
 import sys
 
-from licomp.interface import ObligationTrigger
+from licomp.interface import UseCase
+from licomp.interface import Provisioning
 from licomp.interface import Status
 
 
@@ -17,6 +18,12 @@ class LicompFormatter():
         return None
 
     def format_licenses(self, licenses, verbose=False):
+        return None
+
+    def format_usecases(self, usecases, verbose=False):
+        return None
+
+    def format_provisionings(self, provisionings, verbose=False):
         return None
 
     def format_error(self, error_string, verbose=False):
@@ -37,8 +44,11 @@ class JsonLicompFormatter():
     def format_licenses(self, licenses, verbose=False):
         return json.dumps(licenses, indent=4)
 
-    def format_triggers(self, triggers, verbose=False):
-        return json.dumps(triggers, indent=4)
+    def format_usecases(self, usecases, verbose=False):
+        return json.dumps(usecases, indent=4)
+
+    def format_provisionings(self, provisionings, verbose=False):
+        return json.dumps(provisionings, indent=4)
 
     def format_error(self, error_string, verbose=False):
         return json.dumps({
@@ -60,24 +70,28 @@ class TextLicompFormatter():
         res = []
         res.append(f'Compatibility: {compat}')
         res.append(f'Explanation:   {explanation}')
-        res.append(f'Trigger:       {compatibility["trigger"]}')
+        res.append(f'Provisioning:       {compatibility["provisioning"]}')
         res.append(f'Resource:      {compatibility["resource_name"]}, {compatibility["resource_version"]}')
         return '\n'.join(res)
 
     def format_licenses(self, licenses, verbose=False):
         return ', '.join(licenses)
 
-    def format_triggers(self, triggers, verbose=False):
-        return ', '.join(triggers)
+    def format_usecases(self, usecases, verbose=False):
+        return ', '.join(usecases)
+
+    def format_provisionings(self, provisionings, verbose=False):
+        return ', '.join(provisionings)
 
     def format_error(self, error_string, verbose=False):
         return f'Error: {error_string}'
 
 class LicompParser():
 
-    def __init__(self, licomp, name, description, epilog, default_trigger):
+    def __init__(self, licomp, name, description, epilog, default_usecase, default_provisioning):
         self.licomp = licomp
-        self.default_trigger = default_trigger
+        self.default_usecase = default_usecase
+        self.default_provisioning = default_provisioning
         self.parser = argparse.ArgumentParser(
             prog=name,
             description=description,
@@ -96,10 +110,15 @@ class LicompParser():
         self.parser.add_argument('--version',
                                  action='store_true')
 
-        self.parser.add_argument('--trigger', '-t',
+        self.parser.add_argument('--usecase', '-u',
                                  type=str,
-                                 default=ObligationTrigger.trigger_to_string(self.default_trigger),
-                                 help=f'Provisioning trigger, default: {ObligationTrigger.trigger_to_string(self.default_trigger)}')
+                                 default=UseCase.usecase_to_string(self.default_usecase),
+                                 help=f'Usecase, default: {UseCase.usecase_to_string(self.default_usecase)}')
+
+        self.parser.add_argument('--provisioning', '-p',
+                                 type=str,
+                                 default=Provisioning.provisioning_to_string(self.default_provisioning),
+                                 help=f'Provisioning, default: {Provisioning.provisioning_to_string(self.default_provisioning)}')
 
         subparsers = self.parser.add_subparsers(help='Sub commands')
 
@@ -114,26 +133,35 @@ class LicompParser():
         parser_sl.set_defaults(which="supported_licenses", func=self.supported_licenses)
 
         parser_st = subparsers.add_parser(
-            'supported-triggers', help='List supported triggers.')
-        parser_st.set_defaults(which="supported_triggers", func=self.supported_triggers)
+            'supported-usecases', help='List supported usecases.')
+        parser_st.set_defaults(which="supported_usecases", func=self.supported_usecases)
+
+        parser_st = subparsers.add_parser(
+            'supported-provisionings', help='List supported provisionings.')
+        parser_st.set_defaults(which="supported_provisionings", func=self.supported_provisionings)
 
     def verify(self, args):
         inbound = self.args.in_license
         outbound = self.args.out_license
         try:
-            trigger = ObligationTrigger.string_to_trigger(args.trigger)
+            usecase = UseCase.string_to_usecase(args.usecase)
+            provisioning = Provisioning.string_to_provisioning(args.provisioning)
         except KeyError:
-            return None, LicompFormatter.formatter(self.args.output_format).format_error(f'Trigger {args.trigger} not supported.')
-        res = self.licomp.outbound_inbound_compatibility(outbound, inbound, trigger=trigger)
+            return None, LicompFormatter.formatter(self.args.output_format).format_error(f'Provisioning {args.provisioning} not supported.')
+        res = self.licomp.outbound_inbound_compatibility(outbound, inbound, usecase, provisioning=provisioning)
         return LicompFormatter.formatter(self.args.output_format).format_compatibility(res, args.verbose), None
 
     def supported_licenses(self, args):
         res = self.licomp.supported_licenses()
         return LicompFormatter.formatter(self.args.output_format).format_licenses(res), None
 
-    def supported_triggers(self, args):
-        triggers = [ObligationTrigger.trigger_to_string(x) for x in self.licomp.supported_triggers()]
-        return LicompFormatter.formatter(self.args.output_format).format_triggers(triggers), None
+    def supported_usecases(self, args):
+        usecases = [UseCase.usecase_to_string(x) for x in self.licomp.supported_usecases()]
+        return LicompFormatter.formatter(self.args.output_format).format_usecases(usecases), None
+
+    def supported_provisionings(self, args):
+        provisionings = [Provisioning.provisioning_to_string(x) for x in self.licomp.supported_provisionings()]
+        return LicompFormatter.formatter(self.args.output_format).format_provisionings(provisionings), None
 
     def add_argument(self, *args, **kwargs):
         self.parser.add_argument(*args, **kwargs)

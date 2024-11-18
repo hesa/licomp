@@ -1,10 +1,11 @@
-# SPDX-FileCopyrightText: 2021 Henrik Sandklef
+# SPDX-FileCopyrightText: 2024 Henrik Sandklef
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from licomp.interface import Licomp
-from licomp.interface import ObligationTrigger
-from licomp.interface import ModifiedTrigger
+from licomp.interface import UseCase
+from licomp.interface import Provisioning
+from licomp.interface import Modification
 from licomp.interface import CompatibilityStatus
 from licomp.interface import Status
 
@@ -12,7 +13,8 @@ class DummyLicense(Licomp):
 
     def __init__(self):
         Licomp.__init__(self)
-        self.supported_obligation_triggers = [ObligationTrigger.BIN_DIST]
+        self.provisionings = [Provisioning.BIN_DIST]
+        self.usecases = [UseCase.LIBRARY]
         self.licenses = {
             "BSD-3-Clause": {
                 "GPL-2.0-only": CompatibilityStatus.INCOMPATIBLE,
@@ -25,10 +27,11 @@ class DummyLicense(Licomp):
         }
 
     def _outbound_inbound_compatibility(self,
-                                       outbound,
-                                       inbound,
-                                       trigger=ObligationTrigger.BIN_DIST,
-                                       modified=ModifiedTrigger.UNMODIFIED):
+                                        outbound,
+                                        inbound,
+                                        usecase,
+                                        trigger,
+                                        modified):
         return self.outbound_inbound_reply(self.licenses[outbound][inbound],'some stupid explanation')
 
     def name(self):
@@ -40,6 +43,9 @@ class DummyLicense(Licomp):
     def supported_licenses(self):
         return list(self.licenses.keys())
 
-    def supported_triggers(self):
-        return self.supported_obligation_triggers
+    def supported_usecases(self):
+        return self.usecases
+
+    def supported_provisionings(self):
+        return self.provisionings
 

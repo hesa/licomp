@@ -28,4 +28,4 @@ reuse:
 	reuse lint
 
 lint:
-	flake8
+	flake8 licomp
