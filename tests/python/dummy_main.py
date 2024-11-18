@@ -5,7 +5,8 @@
 import json
 import sys
 
-from licomp.interface import ObligationTrigger
+from licomp.interface import Provisioning
+from licomp.interface import UseCase
 from licomp.main_base import LicompParser
 from test_lcm import DummyLicense
 
@@ -14,7 +15,8 @@ def main():
                             name = "Dummy license impl",
                             description = "Just a dummy impl",
                             epilog = "Do not use",
-                            default_trigger = ObligationTrigger.BIN_DIST)
+                            default_usecase = UseCase.LIBRARY,
+                            default_provisioning = Provisioning.BIN_DIST)
     o_parser.run()
     
 if __name__ == '__main__':

@@ -4,57 +4,48 @@
 
 from enum import Enum
 
-class ObligationTrigger(Enum):
-    SOURCE_DIST = 1
-    BIN_DIST = 2
-    SNIPPET = 3
-    LOCAL_USE = 4
-    PROVIDE_SERVICE = 5
-    PROVIDE_WEBUI = 6
+from licomp.config import licomp_version
+
+class Status(Enum):
+    SUCCESS = 1
+    FAILURE = 10
 
     @staticmethod
-    def string_to_trigger(trigger_string):
+    def string_to_status(status_string):
         _map = {
-            "source-code-distribution": ObligationTrigger.SOURCE_DIST,
-            "binary-distribution": ObligationTrigger.BIN_DIST,
-            "snippet": ObligationTrigger.SNIPPET,
-            "local-use": ObligationTrigger.LOCAL_USE,
-            "provide-service": ObligationTrigger.PROVIDE_SERVICE,
-            "provide-webui": ObligationTrigger.PROVIDE_WEBUI,
+            "success": Status.SUCCESS,
+            "failure": Status.FAILURE,
         }
-        return _map[trigger_string]
+        return _map[status_string]
 
     @staticmethod
-    def trigger_to_string(trigger):
+    def status_to_string(status):
         _map = {
-            ObligationTrigger.SOURCE_DIST: "source-code-distribution",
-            ObligationTrigger.BIN_DIST: "binary-distribution",
-            ObligationTrigger.SNIPPET: "snippet",
-            ObligationTrigger.LOCAL_USE: "local-use",
-            ObligationTrigger.PROVIDE_SERVICE: "provide-service",
-            ObligationTrigger.PROVIDE_WEBUI: "provide-webui",
+            Status.SUCCESS: "success",
+            Status.FAILURE: "failure",
         }
-        return _map[trigger]
+        return _map[status]
+    
 
-class ModifiedTrigger(Enum):
-    MODIFIED = 1
-    UNMODIFIED = 2
+class Modification(Enum):
+    MODIFIED = 20
+    UNMODIFIED = 21
 
     @staticmethod
-    def modified_to_string(modified):
+    def modification_to_string(modification):
         _map = {
-            ModifiedTrigger.MODIFIED: "modified",
-            ModifiedTrigger.UNMODIFIED: "unmodified",
+            Modification.MODIFIED: "modified",
+            Modification.UNMODIFIED: "unmodified",
         }
-        return _map[modified]
+        return _map[modification]
 
 
 class CompatibilityStatus(Enum):
-    COMPATIBLE = 1
-    INCOMPATIBLE = 2
-    DEPENDS = 3
-    UNKNOWN = 4
-    UNSUPPORTED = 5
+    COMPATIBLE = 41
+    INCOMPATIBLE = 42
+    DEPENDS = 43
+    UNKNOWN = 44
+    UNSUPPORTED = 45
 
     @staticmethod
     def string_to_compat_status(compat_status_string):
@@ -80,25 +71,63 @@ class CompatibilityStatus(Enum):
         }
         return _map[compat_status]
 
-class Status(Enum):
-    SUCCESS = 1
-    FAILURE = 10
+class UseCase(Enum):
+    LIBRARY = 51
+    COMPILER = 52
+    SNIPPET = 53
+    TOOL = 54
+    TEST = 55
 
     @staticmethod
-    def string_to_status(status_string):
+    def string_to_usecase(usecase):
         _map = {
-            "success": Status.SUCCESS,
-            "failure": Status.FAILURE,
+            "library": UseCase.LIBRARY,
+            "compiler": UseCase.COMPILER,
+            "snippet": UseCase.SNIPPET,
+            "tool": UseCase.TOOL,
+            "test": UseCase.TEST,
         }
-        return _map[status_string]
+        return _map[usecase]
 
     @staticmethod
-    def status_to_string(status):
+    def usecase_to_string(usecase):
         _map = {
-            Status.SUCCESS: "success",
-            Status.FAILURE: "failure",
+            UseCase.LIBRARY:"library",
+            UseCase.COMPILER:"compiler",
+            UseCase.SNIPPET:"snippet",
+            UseCase.TOOL:"tool",
+            UseCase.TEST:"test",
         }
-        return _map[status]
+        return _map[usecase]
+
+class Provisioning(Enum):
+    SOURCE_DIST = 61
+    BIN_DIST = 62
+    LOCAL_USE = 63
+    SERVICE = 64
+    WEBUI = 65
+
+    @staticmethod
+    def string_to_provisioning(provisioning):
+        _map = {
+            "source-code-distribution": Provisioning.SOURCE_DIST,
+            "binary-distribution": Provisioning.BIN_DIST,
+            "local-use": Provisioning.LOCAL_USE,
+            "provide-service": Provisioning.SERVICE,
+            "provide-webui": Provisioning.WEBUI,
+        }
+        return _map[provisioning]
+
+    @staticmethod
+    def provisioning_to_string(provisioning):
+        _map = {
+            Provisioning.SOURCE_DIST: "source-code-distribution",
+            Provisioning.BIN_DIST: "binary-distribution",
+            Provisioning.LOCAL_USE: "local-use",
+            Provisioning.SERVICE: "provide-service",
+            Provisioning.WEBUI: "provide-webui",
+        }
+        return _map[provisioning]
 
 class LicompException(Exception):
     pass
@@ -108,29 +137,41 @@ class Licomp:
     def __init__(self):
         pass
 
+    @staticmethod
+    def api_version():
+        return licomp_version
+    
     def name(self):
         return None
 
     def version(self):
         return None
 
+    def supported_api_version(self):
+        return None
+
     def outbound_inbound_compatibility(self,
                                        outbound,
                                        inbound,
-                                       trigger=ObligationTrigger.BIN_DIST,
-                                       modified=ModifiedTrigger.UNMODIFIED):
+                                       usecase=UseCase.LIBRARY,
+                                       provisioning=Provisioning.BIN_DIST,
+                                       modification=Modification.UNMODIFIED):
         try:
-            self.check_trigger(trigger)
+            self.check_triggers(usecase, provisioning, modification)
 
-            response = self._outbound_inbound_compatibility(outbound, inbound,
-                                                            trigger, modified)
+            response = self._outbound_inbound_compatibility(outbound,
+                                                            inbound,
+                                                            usecase,
+                                                            provisioning,
+                                                            modification)
             compat_status = response['compatibility_status']
             explanation = response['explanation']
             ret = self.compatibility_reply(Status.SUCCESS,
                                            outbound,
                                            inbound,
-                                           trigger,
-                                           modified,
+                                           usecase,
+                                           provisioning,
+                                           modification,
                                            compat_status,
                                            explanation)
             return ret
@@ -138,19 +179,21 @@ class Licomp:
             raise e
         except TypeError as e:
             raise e
-        except Exception as e:
+        except (KeyError, LicompException) as e:
             return self.failure_reply(e,
                                       outbound,
                                       inbound,
-                                      trigger,
-                                      modified)
+                                      usecase,
+                                      provisioning,
+                                      modification)
 
     def compatibility_reply(self,
                             status,
                             outbound,
                             inbound,
-                            trigger,
-                            modified,
+                            usecase,
+                            provisioning,
+                            modification,
                             compatibility_status,
                             explanation):
 
@@ -158,25 +201,31 @@ class Licomp:
             "status": Status.status_to_string(status),
             "outbound": outbound,
             "inbound": inbound,
-            "trigger": ObligationTrigger.trigger_to_string(trigger),
-            "modified": ModifiedTrigger.modified_to_string(modified),
+            "usecase": UseCase.usecase_to_string(usecase),
+            "provisioning": Provisioning.provisioning_to_string(provisioning),
+            "modification": Modification.modification_to_string(modification),
             "compatibility_status": CompatibilityStatus.compat_status_to_string(compatibility_status),
             "explanation": explanation,
             "resource_name": self.name(),
             "resource_version": self.version(),
         }
 
-    def check_trigger(self, trigger):
-        if trigger not in self.supported_triggers():
-            explanation = f'Trigger "{ObligationTrigger.trigger_to_string(trigger)}" not supported'
+    def check_triggers(self, usecase, provisioning, modification):
+        if provisioning not in self.supported_provisionings():
+            explanation = f'Provisioning "{Provisioning.provisioning_to_string(provisioning)}" not supported'
+            raise LicompException(explanation)
+
+        if usecase not in self.supported_usecases():
+            explanation = f'Use case "{UseCase.usecase_to_string(usecase)}" not supported'
             raise LicompException(explanation)
 
     def failure_reply(self,
                       exception,
                       outbound,
                       inbound,
-                      trigger,
-                      modified):
+                      usecase,
+                      provisioning,
+                      modification):
 
         explanation = None
         if exception:
@@ -186,26 +235,33 @@ class Licomp:
                 explanation = f'Unsupported license(s) found: {unsupported}'
             if exception_type == LicompException:
                 explanation = str(exception)
-
+        
         return self.compatibility_reply(Status.FAILURE,
                                         outbound,
                                         inbound,
-                                        trigger,
-                                        modified,
+                                        usecase,
+                                        provisioning,
+                                        modification,
                                         None,
                                         explanation)
 
     def supported_licenses(self):
         return None
 
-    def supported_triggers(self):
+    def supported_usecases(self):
+        return None
+
+    def supported_provisionings(self):
         return None
 
     def license_supported(self, license_name):
         return license_name in self.supported_licenses()
 
-    def trigger_supported(self, trigger):
-        return trigger in self.supported_triggers()
+    def usecase_supported(self, usecase):
+        return usecase in self.supported_usecases()
+
+    def provisioning_supported(self, provisioning):
+        return provisioning in self.supported_provisionings()
 
     def _outbound_inbound_compatibility(self, compat_status, explanation):
         """
