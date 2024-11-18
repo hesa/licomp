@@ -33,7 +33,7 @@ jobs:
       run: python3 setup.py build sdist
     - name: Lint
       run: |
-        flake8
+        flake8 licomp
     - name: Install
       run: python3 setup.py install
     - name: Test
