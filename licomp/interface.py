@@ -25,7 +25,6 @@ class Status(Enum):
             Status.FAILURE: "failure",
         }
         return _map[status]
-    
 
 class Modification(Enum):
     MODIFIED = 20
@@ -92,11 +91,11 @@ class UseCase(Enum):
     @staticmethod
     def usecase_to_string(usecase):
         _map = {
-            UseCase.LIBRARY:"library",
-            UseCase.COMPILER:"compiler",
-            UseCase.SNIPPET:"snippet",
-            UseCase.TOOL:"tool",
-            UseCase.TEST:"test",
+            UseCase.LIBRARY: "library",
+            UseCase.COMPILER: "compiler",
+            UseCase.SNIPPET: "snippet",
+            UseCase.TOOL: "tool",
+            UseCase.TEST: "test",
         }
         return _map[usecase]
 
@@ -140,7 +139,7 @@ class Licomp:
     @staticmethod
     def api_version():
         return licomp_version
-    
+
     def name(self):
         return None
 
@@ -235,7 +234,7 @@ class Licomp:
                 explanation = f'Unsupported license(s) found: {unsupported}'
             if exception_type == LicompException:
                 explanation = str(exception)
-        
+
         return self.compatibility_reply(Status.FAILURE,
                                         outbound,
                                         inbound,
