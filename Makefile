@@ -11,13 +11,10 @@ clean:
 	rm -fr tests/python/__pycache__
 	rm -fr licomp.egg-info
 
-py-lint:
-	PYTHONPATH=. flake8 flame
-
 build:
 	rm -fr build && python3 setup.py sdist
 
-test:
+test: 
 	PYTHONPATH=python/ python3 -m pytest --log-cli-level=10 tests/python
 	tests/shell/test_cli.sh
 
@@ -29,3 +26,12 @@ reuse:
 
 lint:
 	flake8 licomp
+
+check: test clean build reuse lint
+	@echo ""
+	@echo ""
+	@echo ""
+	@echo "All checks OK :)"
+	@echo ""
+	@echo ""
+	@echo ""
