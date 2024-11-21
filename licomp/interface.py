@@ -155,8 +155,19 @@ class Licomp:
                                        usecase=UseCase.LIBRARY,
                                        provisioning=Provisioning.BIN_DIST,
                                        modification=Modification.UNMODIFIED):
+
         try:
+            # Check if the usecase, provisioning, modifications is not supported
             self.check_triggers(usecase, provisioning, modification)
+
+            # Make sure both licenses are supported
+            ret = self.__licenses_supported(inbound, outbound, usecase, provisioning, modification)
+            if ret:
+                return ret
+            # Check if the licenses are the same
+            ret = self.__licenses_same(inbound, outbound, usecase, provisioning, modification)
+            if ret:
+                return ret
 
             response = self._outbound_inbound_compatibility(outbound,
                                                             inbound,
@@ -208,6 +219,33 @@ class Licomp:
             "resource_name": self.name(),
             "resource_version": self.version(),
         }
+
+    def __licenses_supported(self, inbound, outbound, usecase, provisioning, modification):
+        unsupported = set()
+        if outbound not in self.supported_licenses():
+            unsupported.add(outbound)
+        if inbound not in self.supported_licenses():
+            unsupported.add(inbound)
+        if len(unsupported) > 0:
+            return self.compatibility_reply(Status.FAILURE,
+                                            outbound,
+                                            inbound,
+                                            usecase,
+                                            provisioning,
+                                            modification,
+                                            CompatibilityStatus.UNSUPPORTED,
+                                            f'Unsupported licenses: {", ".join(unsupported)}.')
+
+    def __licenses_same(self, inbound, outbound, usecase, provisioning, modification):
+        if outbound == inbound:
+            return self.compatibility_reply(Status.SUCCESS,
+                                            outbound,
+                                            inbound,
+                                            usecase,
+                                            provisioning,
+                                            modification,
+                                            CompatibilityStatus.COMPATIBLE,
+                                            f'Inbound and outbound license are the same: {outbound}')
 
     def check_triggers(self, usecase, provisioning, modification):
         if provisioning not in self.supported_provisionings():

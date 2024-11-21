@@ -6,14 +6,19 @@ import pytest
 import logging
 
 from licomp_dummy import DummyLicense
+from licomp.interface import UseCase
+from licomp.interface import Provisioning
+from licomp.interface import Modification
 
 dl = DummyLicense()
 
 def test_supported():
     assert len(dl.supported_licenses()) == 2
     
-def test_is_supported():
+def test_license_is_supported():
     assert dl.license_supported("BSD-3-Clause")
+    
+def test_license_is_not_supported():
     assert not dl.license_supported("Some-license-that-does-not-exist")
     
 def test_compat():
@@ -27,4 +32,22 @@ def test_incompat():
     logging.debug("ret: " + str(ret))
     assert ret['compatibility_status'] == "no"
     assert ret['status'] == "success"
+
+def test_compat_unsupported_license():
+    ret = dl.outbound_inbound_compatibility("BSD-3-Clause", "NOT-SUPPORTED")
+    logging.debug("ret: " + str(ret))
+    assert ret['compatibility_status'] == "unsupported"
+    assert ret['status'] == "failure"
+
+def test_compat_supported_use_case():
+    ret = dl.outbound_inbound_compatibility("BSD-3-Clause", "NOT-SUPPORTED", UseCase.LIBRARY)
+    logging.debug("ret: " + str(ret))
+    assert ret['compatibility_status'] == "unsupported"
+    assert ret['status'] == "failure"
+
+def test_compat_unsupported_use_case():
+    ret = dl.outbound_inbound_compatibility("BSD-3-Clause", "NOT-SUPPORTED", UseCase.SNIPPET)
+    logging.debug("ret: " + str(ret))
+    assert ret['compatibility_status'] == None
+    assert ret['status'] == "failure"
 
