@@ -1,0 +1,62 @@
+{
+  "$schema" : "http://json-schema.org/draft-07/schema#",
+  "$id" : "http://spdx.org/rdf/terms",
+  "title" : "SPDX 2.2",
+  "type" : "object",
+  "properties" : {
+    "status" : {
+      "type" : "string",
+      "description" : ""
+    },
+    "outbound" : {
+      "type" : "string",
+      "description" : ""
+    },
+    "inbound" : {
+      "type" : "string",
+      "description" : ""
+    },
+    "usecase" : {
+      "type" : "string",
+      "description" : ""
+    },
+    "provisioning" : {
+      "type" : "string",
+      "description" : ""
+    },
+    "modification" : {
+      "type" : "string",
+      "description" : ""
+    },
+    "compatibility_status" : {
+      "type" : ["string", "null"],
+      "description" : ""
+    },
+    "explanation" : {
+      "type" : "string",
+      "description" : ""
+    },
+    "explanation" : {
+      "type" : "string",
+      "description" : ""
+    },
+    "api_version" : {
+      "type" : "string",
+      "description" : ""
+    },
+    "resource_name" : {
+      "type" : "string",
+      "description" : ""
+    },
+    "resource_version" : {
+      "type" : "string",
+      "description" : ""
+    },
+    "resource_disclaimer" : {
+      "type" : "string",
+      "description" : ""
+    }
+  },
+  "required" : [ "status" ],
+  "additionalProperties" : false  
+}
