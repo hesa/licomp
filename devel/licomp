@@ -4,4 +4,21 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-PYTHONPATH=. python3 ./tests/python/dummy_main.py $*
+DUMMY_FILE=dummy_main.py
+
+if [ "$1" = "--local" ]
+then
+    EXTRA_PYTHONPATH=:../licomp
+    shift
+fi
+if [ "$1" = "--old" ]
+then
+    DUMMY_FILE=olddummy_main.py
+    shift
+fi
+if [ "$1" = "" ]
+then
+    ARGS="verify -il MIT -ol MIT"
+fi
+
+PYTHONPATH=.${EXTRA_PYTHONPATH} python3 ./tests/python/$DUMMY_FILE $* $ARGS

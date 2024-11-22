@@ -8,10 +8,10 @@ import sys
 from licomp.interface import Provisioning
 from licomp.interface import UseCase
 from licomp.main_base import LicompParser
-from licomp_dummy import DummyLicense
+from licomp_olddummy import OldDummyLicense
 
 def main():
-    o_parser = LicompParser(DummyLicense(),
+    o_parser = LicompParser(OldDummyLicense(),
                             name = "Dummy license impl",
                             description = "Just a dummy impl",
                             epilog = "Do not use",
@@ -21,3 +21,5 @@ def main():
     
 if __name__ == '__main__':
     main()
+
+    
