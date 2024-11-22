@@ -32,7 +32,7 @@ setuptools.setup(
         ],
     },
     package_data={
-        'licomp': ['var/*'],
+        'licomp': ['data/*'],
     },
     install_requires=requirements,
     extras_require={
