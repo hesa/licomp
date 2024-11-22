@@ -32,10 +32,11 @@ class DummyLicense(Licomp):
                                         usecase,
                                         trigger,
                                         modified):
-        return self.outbound_inbound_reply(self.licenses[outbound][inbound],'some stupid explanation')
+        return self.outbound_inbound_reply(self.licenses[outbound][inbound],
+                                           'some stupid explanation')
 
     def name(self):
-        return "dummy"
+        return "DummyLicense"
     
     def version(self):
         return "version sth"
@@ -50,5 +51,9 @@ class DummyLicense(Licomp):
         return self.provisionings
 
     def supported_api_version(self):
-        return "0.2"
+        return "0.3"
+
+    def disclaimer(self):
+        return "example disclaimer"
+
 
