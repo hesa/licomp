@@ -15,6 +15,12 @@ dl = DummyLicense()
 def test_supported():
     assert len(dl.supported_licenses()) == 2
     
+def test_provisionings():
+    assert len(dl.supported_provisionings()) == 1
+    
+def test_usecases():
+    assert len(dl.supported_usecases()) == 1
+    
 def test_license_is_supported():
     assert dl.license_supported("BSD-3-Clause")
     
