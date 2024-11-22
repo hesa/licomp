@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2021 Henrik Sandklef
+# SPDX-FileCopyrightText: 2024 Henrik Sandklef
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -8,7 +8,7 @@ import sys
 from licomp.interface import Provisioning
 from licomp.interface import UseCase
 from licomp.main_base import LicompParser
-from test_lcm import DummyLicense
+from licomp_dummy import DummyLicense
 
 def main():
     o_parser = LicompParser(DummyLicense(),
