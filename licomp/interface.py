@@ -4,7 +4,7 @@
 
 from enum import Enum
 
-from licomp.config import licomp_version
+from licomp.config import licomp_api_version
 
 class Status(Enum):
     SUCCESS = 1
@@ -134,11 +134,14 @@ class LicompException(Exception):
 class Licomp:
 
     def __init__(self):
-        pass
+        base_api_version = self.api_version()
+        subclass_api_version = self.supported_api_version()
+        if base_api_version > subclass_api_version:
+            raise LicompException(f'API version mismatch between Licomp ({base_api_version}) and {self.name()} ({subclass_api_version}).')
 
     @staticmethod
     def api_version():
-        return licomp_version
+        return licomp_api_version
 
     def name(self):
         return None
@@ -164,6 +167,7 @@ class Licomp:
             ret = self.__licenses_supported(inbound, outbound, usecase, provisioning, modification)
             if ret:
                 return ret
+
             # Check if the licenses are the same
             ret = self.__licenses_same(inbound, outbound, usecase, provisioning, modification)
             if ret:
@@ -183,7 +187,8 @@ class Licomp:
                                            provisioning,
                                            modification,
                                            compat_status,
-                                           explanation)
+                                           explanation,
+                                           self.disclaimer())
             return ret
         except AttributeError as e:
             raise e
@@ -205,7 +210,8 @@ class Licomp:
                             provisioning,
                             modification,
                             compatibility_status,
-                            explanation):
+                            explanation,
+                            disclaimer):
 
         return {
             "status": Status.status_to_string(status),
@@ -216,8 +222,10 @@ class Licomp:
             "modification": Modification.modification_to_string(modification),
             "compatibility_status": CompatibilityStatus.compat_status_to_string(compatibility_status),
             "explanation": explanation,
+            "api_version": self.api_version(),
             "resource_name": self.name(),
             "resource_version": self.version(),
+            "resource_disclaimer": disclaimer,
         }
 
     def __licenses_supported(self, inbound, outbound, usecase, provisioning, modification):
@@ -234,7 +242,8 @@ class Licomp:
                                             provisioning,
                                             modification,
                                             CompatibilityStatus.UNSUPPORTED,
-                                            f'Unsupported licenses: {", ".join(unsupported)}.')
+                                            f'Unsupported licenses: {", ".join(unsupported)}.',
+                                            self.disclaimer())
 
     def __licenses_same(self, inbound, outbound, usecase, provisioning, modification):
         if outbound == inbound:
@@ -245,7 +254,8 @@ class Licomp:
                                             provisioning,
                                             modification,
                                             CompatibilityStatus.COMPATIBLE,
-                                            f'Inbound and outbound license are the same: {outbound}')
+                                            f'Inbound and outbound license are the same: {outbound}',
+                                            self.disclaimer())
 
     def check_triggers(self, usecase, provisioning, modification):
         if provisioning not in self.supported_provisionings():
@@ -280,7 +290,8 @@ class Licomp:
                                         provisioning,
                                         modification,
                                         None,
-                                        explanation)
+                                        explanation,
+                                        self.disclaimer())
 
     def supported_licenses(self):
         return None
@@ -299,6 +310,9 @@ class Licomp:
 
     def provisioning_supported(self, provisioning):
         return provisioning in self.supported_provisionings()
+
+    def disclaimer(self):
+        return None
 
     def _outbound_inbound_compatibility(self, compat_status, explanation):
         """
