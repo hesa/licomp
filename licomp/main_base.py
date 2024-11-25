@@ -121,6 +121,7 @@ class LicompParser():
                                  help=f'Provisioning, default: {Provisioning.provisioning_to_string(self.default_provisioning)}')
 
         subparsers = self.parser.add_subparsers(help='Sub commands')
+        self.subparsers = subparsers
 
         parser_v = subparsers.add_parser(
             'verify', help='Verify license compatibility between for a package or an outbound license expression against inbound license expression.')
@@ -165,6 +166,9 @@ class LicompParser():
 
     def add_argument(self, *args, **kwargs):
         self.parser.add_argument(*args, **kwargs)
+
+    def sub_parsers(self):
+        return self.subparsers
 
     def run(self):
         self.args = self.parser.parse_args()
