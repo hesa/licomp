@@ -160,27 +160,58 @@ class Licomp:
                                        modification=Modification.UNMODIFIED):
 
         try:
+            total_status = Status.SUCCESS
+            provisioning_status = Status.SUCCESS
+            usecase_status = Status.SUCCESS
+            license_supported_status = Status.SUCCESS
+            explanations = []
+
             # Check if the usecase, provisioning, modifications is not supported
-            self.check_triggers(usecase, provisioning, modification)
+            if provisioning not in self.supported_provisionings():
+                explanations.append(f'Provisioning "{Provisioning.provisioning_to_string(provisioning)}" not supported')
+                provisioning_status = Status.FAILURE
+                total_status = Status.FAILURE
+
+            if usecase not in self.supported_usecases():
+                explanations.append(f'Use case "{UseCase.usecase_to_string(usecase)}" not supported')
+                usecase_status = Status.FAILURE
+                total_status = Status.FAILURE
 
             # Make sure both licenses are supported
             ret = self.__licenses_supported(inbound, outbound, usecase, provisioning, modification)
             if ret:
-                return ret
+                explanations.append(ret)
+                license_supported_status = Status.FAILURE
+                total_status = Status.FAILURE
 
-            # Check if the licenses are the same
-            ret = self.__licenses_same(inbound, outbound, usecase, provisioning, modification)
-            if ret:
-                return ret
+            if total_status == Status.SUCCESS:
 
-            response = self._outbound_inbound_compatibility(outbound,
-                                                            inbound,
-                                                            usecase,
-                                                            provisioning,
-                                                            modification)
-            compat_status = response['compatibility_status']
-            explanation = response['explanation']
-            ret = self.compatibility_reply(Status.SUCCESS,
+                # Check if the licenses are the same
+                ret = self.__licenses_same(inbound, outbound, usecase, provisioning, modification)
+                if ret:
+                    explanation = ret
+                    compat_status = CompatibilityStatus.COMPATIBLE
+
+                else:
+                    response = self._outbound_inbound_compatibility(outbound,
+                                                                    inbound,
+                                                                    usecase,
+                                                                    provisioning,
+                                                                    modification)
+                    compat_status = response['compatibility_status']
+                    explanation = response['explanation']
+            else:
+                compat_status = None
+                explanation = None
+
+            status_details = {
+                'provisioning_status': Status.status_to_string(provisioning_status),
+                'usecase_status': Status.status_to_string(usecase_status),
+                'license_supported_status': Status.status_to_string(license_supported_status),
+            }
+
+            ret = self.compatibility_reply(total_status,
+                                           status_details,
                                            outbound,
                                            inbound,
                                            usecase,
@@ -204,6 +235,7 @@ class Licomp:
 
     def compatibility_reply(self,
                             status,
+                            status_details,
                             outbound,
                             inbound,
                             usecase,
@@ -215,6 +247,7 @@ class Licomp:
 
         return {
             "status": Status.status_to_string(status),
+            "status_details": status_details,
             "outbound": outbound,
             "inbound": inbound,
             "usecase": UseCase.usecase_to_string(usecase),
@@ -235,36 +268,11 @@ class Licomp:
         if inbound not in self.supported_licenses():
             unsupported.add(inbound)
         if len(unsupported) > 0:
-            return self.compatibility_reply(Status.FAILURE,
-                                            outbound,
-                                            inbound,
-                                            usecase,
-                                            provisioning,
-                                            modification,
-                                            CompatibilityStatus.UNSUPPORTED,
-                                            f'Unsupported licenses: {", ".join(unsupported)}.',
-                                            self.disclaimer())
+            return f'Unsupported licenses: {", ".join(unsupported)}.'
 
     def __licenses_same(self, inbound, outbound, usecase, provisioning, modification):
         if outbound == inbound:
-            return self.compatibility_reply(Status.SUCCESS,
-                                            outbound,
-                                            inbound,
-                                            usecase,
-                                            provisioning,
-                                            modification,
-                                            CompatibilityStatus.COMPATIBLE,
-                                            f'Inbound and outbound license are the same: {outbound}',
-                                            self.disclaimer())
-
-    def check_triggers(self, usecase, provisioning, modification):
-        if provisioning not in self.supported_provisionings():
-            explanation = f'Provisioning "{Provisioning.provisioning_to_string(provisioning)}" not supported'
-            raise LicompException(explanation)
-
-        if usecase not in self.supported_usecases():
-            explanation = f'Use case "{UseCase.usecase_to_string(usecase)}" not supported'
-            raise LicompException(explanation)
+            return f'Inbound and outbound license are the same: {outbound}'
 
     def failure_reply(self,
                       exception,
@@ -284,6 +292,7 @@ class Licomp:
                 explanation = str(exception)
 
         return self.compatibility_reply(Status.FAILURE,
+                                        {},
                                         outbound,
                                         inbound,
                                         usecase,

@@ -8,6 +8,23 @@
       "type" : "string",
       "description" : ""
     },
+    "status_details" : {
+      "type": "object",
+        "properties": {
+          "provisioning_status" : {
+            "type" : "string",
+            "description" : ""
+          },
+          "usecase_status" : {
+            "type" : "string",
+            "description" : ""
+          },
+          "license_supported_status" : {
+            "type" : "string",
+            "description" : ""
+          }
+        }
+    },
     "outbound" : {
       "type" : "string",
       "description" : ""
@@ -33,11 +50,7 @@
       "description" : ""
     },
     "explanation" : {
-      "type" : "string",
-      "description" : ""
-    },
-    "explanation" : {
-      "type" : "string",
+      "type" : ["string", "null"],
       "description" : ""
     },
     "api_version" : {

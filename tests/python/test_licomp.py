@@ -42,13 +42,13 @@ def test_incompat():
 def test_compat_unsupported_license():
     ret = dl.outbound_inbound_compatibility("BSD-3-Clause", "NOT-SUPPORTED")
     logging.debug("ret: " + str(ret))
-    assert ret['compatibility_status'] == "unsupported"
+    assert ret['compatibility_status'] == None
     assert ret['status'] == "failure"
 
 def test_compat_supported_use_case():
     ret = dl.outbound_inbound_compatibility("BSD-3-Clause", "NOT-SUPPORTED", UseCase.LIBRARY)
     logging.debug("ret: " + str(ret))
-    assert ret['compatibility_status'] == "unsupported"
+    assert ret['compatibility_status'] == None
     assert ret['status'] == "failure"
 
 def test_compat_unsupported_use_case():
