@@ -15,7 +15,7 @@ Files: .bumpversion.cfg
 Copyright: Henrik Sandklef
 License: GPL-3.0-or-later
 
-Files: README*
+Files: README* docs/*.md
 Copyright: Henrik Sandklef
 License: GPL-3.0-or-later
 
