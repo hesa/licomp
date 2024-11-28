@@ -29,7 +29,7 @@ provide this to the tool.
 
 The way you use a software determines what parts of the license kick in. Let's take [GCC](https://gcc.gnu.org/) which is licensed under "[GPL-3.0-or-later](https://www.gnu.org/licenses/gpl-3.0-standalone.html) WITH [GCC-exception-3.1](GCC-exception-3.1)". If you use GCC as a compiler then the output of the compiler, typically your program, is covered by the exception and you distribute your program (the GCC Runtime libraries that comes with GCC) under any license. But if you use a snippet from GCC, then the copyleft effect is triggered and you need to license your work under the same license (GPLv3).
 
-The following usecases are (currently) supported:
+The following usecases are supported:
 
 * `library` - you use the licensed component as a library (creating a combined work, a derivative work)
 * `compiler` - you use the licensed component as a compiler taking input and producing output (e.g. GCC, Autoconf)
@@ -39,8 +39,11 @@ The following usecases are (currently) supported:
 <a name="licomp-concepts-provisioning"></a>
 ## Provisioning
 
-* `source-code-distribution` - you disitrbute the licensed component, in source code form
-* `binary-distribution` - you disitrbute the licensed component, in binary (non source code) form
+The way you provide the software to your user.
+
+The following provisionings are supported:
+* `source-code-distribution` - you distribute the licensed component, in source code form
+* `binary-distribution` - you distribute the licensed component, in binary (non source code) form
 * `local-use` -  you used the licensed component locally (e.g. and editor you use to write software)
 * `provide-service` - you provide a service over a REST api. No source is distributed.
 * `provide-webui` - you provide a webui which is distributed to the user's browser.
@@ -48,6 +51,9 @@ The following usecases are (currently) supported:
 <a name="licomp-concepts-modification"></a>
 ## Modification
 
+Used for specifying whether or not you have nodified the licensed component.
+
+The following modifications are supported:
 * `modified` - you have made modifications to the licensed component
 * `unmodified`- you have not made any modifications to the licensed component
 
