@@ -25,9 +25,12 @@ also in tooling. We have tried to organise this context and a way to
 provide this to the tool.
 
 <a name="licomp-concepts-usecase"></a>
-## Usecase
 
-The way you use a software determines what parts of the license kick in. Let's take [GCC](https://gcc.gnu.org/) which is licensed under "[GPL-3.0-or-later](https://www.gnu.org/licenses/gpl-3.0-standalone.html) WITH [GCC-exception-3.1](GCC-exception-3.1)". If you use GCC as a compiler then the output of the compiler, typically your program, is covered by the exception and you distribute your program (the GCC Runtime libraries that comes with GCC) under any license. But if you use a snippet from GCC, then the copyleft effect is triggered and you need to license your work under the same license (GPLv3).
+## Example of context
+
+The way you use open source licensed software determines which obligations you trigger. Let's take [GCC](https://gcc.gnu.org/) for example, which is licensed under "[GPL-3.0-or-later](https://www.gnu.org/licenses/gpl-3.0-standalone.html) WITH [GCC-exception-3.1](GCC-exception-3.1)". If you use GCC as a compiler then the output of the compiler, typically your program, is covered by the exception and you distribute your program (the GCC Runtime libraries that comes with GCC) under any license of your choosing. But if you use a snippet from GCC, then the copyleft effect is triggered and you need to license your work under the same license (GPLv3).
+
+## Usecase
 
 The following usecases are supported:
 
@@ -39,9 +42,9 @@ The following usecases are supported:
 <a name="licomp-concepts-provisioning"></a>
 ## Provisioning
 
-The way you provide the software to your user.
+In this context, providioning is the the way you provide the software to your user.
 
-The following provisionings are supported:
+The following types of provisioning are supported:
 * `source-code-distribution` - you distribute the licensed component, in source code form
 * `binary-distribution` - you distribute the licensed component, in binary (non source code) form
 * `local-use` -  you used the licensed component locally (e.g. and editor you use to write software)
