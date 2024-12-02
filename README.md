@@ -1,7 +1,7 @@
 # licomp - License Compatibility
 
-Licomp provides an interface and code for miscallenous compatibility
-resources making them accessible more easily.
+The licomp library provides an interface and code for various license compatibility
+resources making them accessible programmatically.
 
 Licomp also provides some basic functionality for such resources to
 easily create a command line program.
@@ -9,7 +9,7 @@ easily create a command line program.
 The licomp resources below can be accessed as a group by:
 * [licomp-toolkit](https://github.com/hesa/licomp-toolkit) - (`pip install licomp-toolkit`)
 
-Licomp is used be the following compatibility resources:
+Licomp is used with the following compatibility resources:
 * [licomp-hermione](https://github.com/hesa/licomp-hermione) - (`pip install licomp-hermione`)
 * [licomp-osadl](https://github.com/hesa/licomp-osadl) - (`pip install licomp-osadl`)
 * [licomp-proprietary](https://github.com/hesa/licomp-proprietary) - (`pip install licomp-proprietary`)
@@ -19,10 +19,9 @@ Licomp is used be the following compatibility resources:
 <a name="licomp-concepts"></a>
 # Licomp basic concepts
 
-Answering whether one license is compatible with another needs some
-context. This context is often missing in the quesion but sometimes
-also in tooling. We have tried to organise this context and a way to
-provide this to the tool.
+Licomp can be used to help determine if a given license is compatible with another. These 
+compatibility checks needs context which is often missing. (More about the context). 
+We have tried to organise this context and a way to provide this to the tool.
 
 <a name="licomp-concepts-usecase"></a>
 ## Usecase
