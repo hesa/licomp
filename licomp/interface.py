@@ -257,6 +257,8 @@ class Licomp:
             "explanation": explanation,
             "api_version": self.api_version(),
             "resource_name": self.name(),
+            "data_url": self.data_url(),
+            "resource_url": self.url(),
             "resource_version": self.version(),
             "resource_disclaimer": disclaimer,
         }
@@ -321,6 +323,12 @@ class Licomp:
         return provisioning in self.supported_provisionings()
 
     def disclaimer(self):
+        return None
+
+    def url(self):
+        return None
+
+    def data_url(self):
         return None
 
     def _outbound_inbound_compatibility(self, compat_status, explanation):

@@ -19,6 +19,8 @@
     "compatibility_status": "yes",
     "explanation": "some stupid explanation",
     "api_version": "0.3",
+    "data_url": "http://github.com/some-org/compat-data",
+    "resource_url": "http://github.com/some-org/licomp-project",
     "resource_name": "DummyLicense",
     "resource_version": "version sth",
     "resource_disclaimer": "example disclaimer"
@@ -92,6 +94,14 @@ An explanation to what went wrong. Typically for use in interaction with a user.
 ## Api_version
 
 The version of the api and format as provided by Licomp.
+
+## Data_url
+
+The url of the resource providing the original compatibility data.
+
+## Resource_url
+
+The url of the Licomp resource providing the compatibility data.
 
 ## Resource_name
 
