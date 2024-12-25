@@ -57,6 +57,14 @@
       "type" : "string",
       "description" : ""
     },
+    "data_url" : {
+      "type" : "string",
+      "description" : ""
+    },
+    "resource_url" : {
+      "type" : "string",
+      "description" : ""
+    },
     "resource_name" : {
       "type" : "string",
       "description" : ""
