@@ -51,9 +51,13 @@ class DummyLicense(Licomp):
         return self.provisionings
 
     def supported_api_version(self):
-        return "0.3"
+        return "0.4"
 
     def disclaimer(self):
         return "example disclaimer"
 
+    def data_url(self):
+        return 'https://a-url'
 
+    def url(self):
+        return 'https://another-url'
