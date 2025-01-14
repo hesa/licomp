@@ -26,7 +26,7 @@ run_comp_test()
     EXP=$1
     shift
     RESP=$(dummy_cli $* | jq -r .compatibility_status)
-    echo -n "$*: "
+    printf "%-75s" "$*: "
     check_resp $RESP $EXP
     echo "OK"
 }
@@ -36,7 +36,7 @@ run_list_test()
     EXP=$1
     shift
     RESP=$(dummy_cli $* | jq -r .[] | wc -l)
-    echo -n "$*: "
+    printf "%-75s" "$*: "
     check_resp $RESP $EXP
     echo "OK"
 }
@@ -50,6 +50,6 @@ run_comp_test "null" "verify -il GPL-2.0-only -ol DO_NOT_EXIST"
 run_comp_test "null" "verify -il DO_NOT_EXIST -ol BSD-3-Clause"
 run_comp_test "null" "verify -il DO_NOT_EXIST -ol DO_NOT_EXIST"
 
-run_list_test 2 supported-licenses
+run_list_test 3 supported-licenses
 run_list_test 1 supported-provisionings
 run_list_test 1 supported-usecases
