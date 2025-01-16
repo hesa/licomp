@@ -13,7 +13,7 @@ from licomp.interface import Modification
 dl = DummyLicense()
 
 def test_supported():
-    assert len(dl.supported_licenses()) == 2
+    assert len(dl.supported_licenses()) == 3
     
 def test_provisionings():
     assert len(dl.supported_provisionings()) == 1

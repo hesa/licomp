@@ -17,7 +17,7 @@ def main():
                             epilog = "Do not use",
                             default_usecase = UseCase.LIBRARY,
                             default_provisioning = Provisioning.BIN_DIST)
-    o_parser.run()
+    return o_parser.run()
     
 if __name__ == '__main__':
-    main()
+    sys.exit(main())

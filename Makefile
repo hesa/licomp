@@ -17,6 +17,7 @@ build:
 test: 
 	PYTHONPATH=python/ python3 -m pytest --log-cli-level=10 tests/python
 	tests/shell/test_cli.sh
+	tests/shell/test_returns.sh
 
 install:
 	pip install .

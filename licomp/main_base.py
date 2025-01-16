@@ -10,7 +10,9 @@ import sys
 from licomp.interface import UseCase
 from licomp.interface import Provisioning
 from licomp.interface import Status
-
+from licomp.return_codes import ReturnCodes
+from licomp.return_codes import compatibility_status_to_returncode
+from licomp.return_codes import licomp_status_to_returncode
 
 class LicompFormatter():
 
@@ -144,25 +146,47 @@ class LicompParser():
     def verify(self, args):
         inbound = self.args.in_license
         outbound = self.args.out_license
+
+        # check outbound
+        if not outbound:
+            return None, ReturnCodes.LICOMP_MISSING_ARGUMENTS.value, LicompFormatter.formatter(self.args.output_format).format_error('Outbound license missing.')
+
+        # check inbound
+        if not inbound:
+            return None, ReturnCodes.LICOMP_MISSING_ARGUMENTS.value, LicompFormatter.formatter(self.args.output_format).format_error('Inbound license missing.')
+
+        # Check usecase
         try:
             usecase = UseCase.string_to_usecase(args.usecase)
+        except KeyError:
+            return None, ReturnCodes.LICOMP_UNSUPPORTED_USECASE.value, LicompFormatter.formatter(self.args.output_format).format_error(f'Usecase {args.usecase} not supported.')
+
+        # Check provisioning case
+        try:
             provisioning = Provisioning.string_to_provisioning(args.provisioning)
         except KeyError:
-            return None, LicompFormatter.formatter(self.args.output_format).format_error(f'Provisioning {args.provisioning} not supported.')
+            return None, ReturnCodes.LICOMP_UNSUPPORTED_PROVISIONING.value, LicompFormatter.formatter(self.args.output_format).format_error(f'Provisioning {args.provisioning} not supported.')
+
+        # usecase and provisioning case are OK
         res = self.licomp.outbound_inbound_compatibility(outbound, inbound, usecase, provisioning=provisioning)
-        return LicompFormatter.formatter(self.args.output_format).format_compatibility(res, args.verbose), None
+        if res['status'] == 'success':
+            ret_code = compatibility_status_to_returncode(res['compatibility_status'])
+        else:
+            ret_code = licomp_status_to_returncode(res['status_details'])
+
+        return LicompFormatter.formatter(self.args.output_format).format_compatibility(res, args.verbose), ret_code, None
 
     def supported_licenses(self, args):
         res = self.licomp.supported_licenses()
-        return LicompFormatter.formatter(self.args.output_format).format_licenses(res), None
+        return LicompFormatter.formatter(self.args.output_format).format_licenses(res), ReturnCodes.LICOMP_OK.value, None
 
     def supported_usecases(self, args):
         usecases = [UseCase.usecase_to_string(x) for x in self.licomp.supported_usecases()]
-        return LicompFormatter.formatter(self.args.output_format).format_usecases(usecases), None
+        return LicompFormatter.formatter(self.args.output_format).format_usecases(usecases), ReturnCodes.LICOMP_OK.value, None
 
     def supported_provisionings(self, args):
         provisionings = [Provisioning.provisioning_to_string(x) for x in self.licomp.supported_provisionings()]
-        return LicompFormatter.formatter(self.args.output_format).format_provisionings(provisionings), None
+        return LicompFormatter.formatter(self.args.output_format).format_provisionings(provisionings), ReturnCodes.LICOMP_OK.value, None
 
     def add_argument(self, *args, **kwargs):
         self.parser.add_argument(*args, **kwargs)
@@ -170,7 +194,7 @@ class LicompParser():
     def sub_parsers(self):
         return self.subparsers
 
-    def run(self):
+    def run_noexit(self):
         self.args = self.parser.parse_args()
 
         # --name
@@ -194,10 +218,17 @@ class LicompParser():
             logging.getLogger().setLevel(logging.DEBUG)
 
         # execute command
-        res, err = self.args.func(self.args)
+        res, code, err = self.args.func(self.args)
+        return res, code, err, self.args.func
+
+    def run(self):
+        res, code, err, func = self.run_noexit()
+
         if err:
             print(err, file=sys.stderr)
-            sys.exit(1)
+            sys.exit(code)
 
         # print (formatted) result
         print(res)
+
+        return code

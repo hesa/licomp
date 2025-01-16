@@ -15,14 +15,24 @@ class DummyLicense(Licomp):
         Licomp.__init__(self)
         self.provisionings = [Provisioning.BIN_DIST]
         self.usecases = [UseCase.LIBRARY]
+        # The matrix below is made up for test purposes
+        # It may or may NOT reflect actual compatibilities
+        # DO NOT USE IT FOR ANYTHING (apart from testing licomp)
         self.licenses = {
+            "AFL-2.0": {
+                "GPL-2.0-only": CompatibilityStatus.INCOMPATIBLE,
+                "BSD-3-Clause": CompatibilityStatus.COMPATIBLE,
+                "AFL-2.0": CompatibilityStatus.COMPATIBLE,
+            },
             "BSD-3-Clause": {
                 "GPL-2.0-only": CompatibilityStatus.INCOMPATIBLE,
-                "BSD-3-Clause": CompatibilityStatus.COMPATIBLE
+                "BSD-3-Clause": CompatibilityStatus.COMPATIBLE,
+                "AFL-2.0": CompatibilityStatus.DEPENDS,
             },
             "GPL-2.0-only": {
                 "BSD-3-Clause": CompatibilityStatus.COMPATIBLE,
                 "GPL-2.0-only": CompatibilityStatus.COMPATIBLE,
+                "AFL-2.0": CompatibilityStatus.UNKNOWN,
             }
         }
 
