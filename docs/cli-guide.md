@@ -13,6 +13,7 @@ Verify license compatibility between for a package or an outbound license expres
 ### Return values
 
 * `0` - compatible, i.e. inbound license can be used with outbound license
+* `1` - reserved for Licomp subclasses
 * `2` - incompatible, i.e. inbound license can not be used with outbound license
 * `3` - depends, i.e. whether inbound license can be used with outbound license needs to be determined by a lawyer
 * `4` - unknown, i.e. whether inbound license can not be used with outbound license is unknown
