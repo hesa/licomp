@@ -61,7 +61,7 @@ class DummyLicense(Licomp):
         return self.provisionings
 
     def supported_api_version(self):
-        return "0.4"
+        return "0.5"
 
     def disclaimer(self):
         return "example disclaimer"
