@@ -44,7 +44,7 @@ __comp_status_str_map__ = {
 }
 
 def compatibility_status_to_returncode(compat_status):
-    return __comp_str_status_map__[compat_status]
+    return __comp_str_status_map__[compat_status].value
 
 def returncode_to_compatibility_status(ret_code):
     return __comp_status_str_map__[ret_code]
@@ -56,4 +56,4 @@ def licomp_status_to_returncode(licomp_status_details):
         return ReturnCodes.LICOMP_UNSUPPORTED_USECASE.value
     if licomp_status_details['license_supported_status'] == 'failure':
         return ReturnCodes.LICOMP_UNSUPPORTED_LICENSE.value
-    return ReturnCodes.LICOMP_INTERNAL_ERROR
+    return ReturnCodes.LICOMP_INTERNAL_ERROR.value
