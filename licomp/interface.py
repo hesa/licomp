@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from enum import Enum
+import logging
 
 from licomp.config import licomp_api_version
 
@@ -129,7 +130,10 @@ class Provisioning(Enum):
         return _map[provisioning]
 
 class LicompException(Exception):
-    pass
+
+    def __init__(self, message, return_code):
+        super().__init__(message)
+        self.return_code = return_code
 
 class Licomp:
 
@@ -198,6 +202,18 @@ class Licomp:
                                                                     usecase,
                                                                     provisioning,
                                                                     modification)
+
+                    # A license can be supported one way but not the other
+                    # e.g. a resource can support license A and B, but
+                    # only     A -> B
+                    # and not  B -> A
+                    # so double check license support after response from resource
+                    if response['compatibility_status'] == CompatibilityStatus.UNSUPPORTED:
+                        license_supported_status = Status.FAILURE
+                        total_status = Status.FAILURE
+                        logging.debug(f'licmp: adjusting compat to failure, since: {response["compatibility_status"]}')
+                        pass
+
                     compat_status = response['compatibility_status']
                     explanation = response['explanation']
             else:

@@ -1,16 +1,11 @@
 #!/bin/bash
 
-# SPDX-FileCopyrightText: 2024 Henrik Sandklef
+# SPDX-FileCopyrightText: 2025 Henrik Sandklef
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 DUMMY_FILE=dummy_main.py
 
-if [ "$1" = "--local" ]
-then
-    EXTRA_PYTHONPATH=:../licomp
-    shift
-fi
 if [ "$1" = "--old" ]
 then
     DUMMY_FILE=olddummy_main.py

@@ -16,7 +16,7 @@ check_ret()
 
     if [ $ACTUAL != $EXPECTED ]
     then
-        echo "\"$ACTUAL\" != \"$EXPECTED\" :(" 
+        echo " actual: \"$ACTUAL\" !=   expected: \"$EXPECTED\" :(" 
         exit 1
     fi
 }

@@ -94,11 +94,11 @@ class LicompParser():
         self.licomp = licomp
         self.default_usecase = default_usecase
         self.default_provisioning = default_provisioning
-        self.parser = argparse.ArgumentParser(
-            prog=name,
-            description=description,
-            epilog=epilog,
-            formatter_class=argparse.RawTextHelpFormatter)
+        self.parser = argparse.ArgumentParser(prog=name,
+                                              description=description,
+                                              epilog=epilog,
+                                              formatter_class=argparse.RawTextHelpFormatter)
+
         self.parser.add_argument('-v', '--verbose',
                                  action='store_true')
 
@@ -172,7 +172,10 @@ class LicompParser():
         if res['status'] == 'success':
             ret_code = compatibility_status_to_returncode(res['compatibility_status'])
         else:
-            ret_code = licomp_status_to_returncode(res['status_details'])
+            if res['status_details']:
+                ret_code = licomp_status_to_returncode(res['status_details'])
+            else:
+                ret_code = ReturnCodes.LICOMP_UNSUPPORTED_PROVISIONING.value
 
         return LicompFormatter.formatter(self.args.output_format).format_compatibility(res, args.verbose), ret_code, None
 
@@ -195,7 +198,17 @@ class LicompParser():
         return self.subparsers
 
     def run_noexit(self):
-        self.args = self.parser.parse_args()
+
+        # a bit ugly hack to replace argparse's return value
+        # with custom for parse error
+        try:
+            self.args = self.parser.parse_args()
+        except SystemExit as e:
+            exit_code = e.code
+            logging.debug(f'exit code from parser: {exit_code}')
+            if not exit_code:
+                sys.exit(0)
+            sys.exit(ReturnCodes.LICOMP_PARSE_ERROR.value)
 
         # --name
         if self.args.name:
