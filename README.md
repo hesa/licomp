@@ -56,4 +56,4 @@ The following modifications are supported:
 
 # Licomp reply format
 
-See [Licomp Reply Format](docs/reply-format.md)
+See [Licomp Reply Format](https://github.com/hesa/licomp/blob/main/docs/reply-format.md)
