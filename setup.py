@@ -24,7 +24,7 @@ setuptools.setup(
     version=licomp_version,
     author="Henrik Sanklef",
     author_email="hesa@sandklef.com",
-    description=long_description,
+    description=licomp_description,
     long_description=_long_description,
     long_description_content_type="text/markdown",
     license_files=('LICENSES/GPL-3.0-or-later.txt',),
