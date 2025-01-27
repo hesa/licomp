@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2024 Henrik Sandklef
+# SPDX-FileCopyrightText: 2025 Henrik Sandklef
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -16,12 +16,15 @@ requirements_dev = []
 with open('requirements-dev.txt') as f:
     requirements_dev = f.read().splitlines()
 
+with open("README.md") as i:
+    _long_description = i.read()
+
 setuptools.setup(
     name=licomp_module_name,
     version=licomp_version,
     author="Henrik Sanklef",
     author_email="hesa@sandklef.com",
-    description="",
+    description=_long_description,
     long_description=licomp_description,
     long_description_content_type="text/markdown",
     license_files=('LICENSES/GPL-3.0-or-later.txt',),
