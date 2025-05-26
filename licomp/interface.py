@@ -4,8 +4,15 @@
 
 from enum import Enum
 import logging
+import json
+import os
 
 from licomp.config import licomp_api_version
+
+SCRIPT_DIR = os.path.dirname(__file__)
+DATA_DIR = os.path.join(SCRIPT_DIR, 'data')
+SCHEMA_FILE = os.path.join(DATA_DIR, 'reply_schema.json')
+
 
 class Status(Enum):
     SUCCESS = 1
@@ -146,6 +153,11 @@ class Licomp:
     @staticmethod
     def api_version():
         return licomp_api_version
+
+    @staticmethod
+    def json_schema():
+        with open(SCHEMA_FILE) as fp:
+            return json.load(fp)
 
     def name(self):
         return None
