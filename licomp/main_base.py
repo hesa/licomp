@@ -128,8 +128,13 @@ class LicompParser():
         parser_v = subparsers.add_parser(
             'verify', help='Verify license compatibility between for a package or an outbound license expression against inbound license expression.')
         parser_v.set_defaults(which="verify", func=self.verify)
-        parser_v.add_argument('--outbound-license', '-ol', type=str, dest='out_license', help='Outbound license expressions', default=None)
+        parser_v.add_argument('--outbound-license', '-ol', type=str, dest='out_license', help='Outbound license expression', default=None)
         parser_v.add_argument('--inbound-license', '-il', type=str, dest='in_license', help='Inbound license expression', default=None)
+
+        parser_va = subparsers.add_parser(
+            'validate', help='Validate that the data is following the Licomp reply specification')
+        parser_va.set_defaults(which="validate", func=self.validate)
+        parser_va.add_argument("file_name", type=str)
 
         parser_sl = subparsers.add_parser(
             'supported-licenses', help='List supported licenses.')
@@ -142,6 +147,12 @@ class LicompParser():
         parser_st = subparsers.add_parser(
             'supported-provisionings', help='List supported provisionings.')
         parser_st.set_defaults(which="supported_provisionings", func=self.supported_provisionings)
+
+    def validate(self, args):
+        with open(args.file_name) as fp:
+            data = json.load(fp)
+            self.licomp.validate(data)
+        return "", 0, None
 
     def verify(self, args):
         inbound = self.args.in_license
