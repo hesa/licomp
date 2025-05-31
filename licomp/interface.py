@@ -5,6 +5,7 @@
 from enum import Enum
 import logging
 import json
+import jsonschema
 import os
 
 from licomp.config import licomp_api_version
@@ -145,9 +146,13 @@ class LicompException(Exception):
 class Licomp:
 
     def __init__(self):
+        self.__check_api()
+        pass
+
+    def __check_api(self):
         base_api_version = self.api_version()
         subclass_api_version = self.supported_api_version()
-        if base_api_version > subclass_api_version:
+        if (base_api_version) > (subclass_api_version):
             raise LicompException(f'API version mismatch between Licomp ({base_api_version}) and {self.name()} ({subclass_api_version}).')
 
     @staticmethod
@@ -370,3 +375,10 @@ class Licomp:
             'compatibility_status': compat_status,
             'explanation': explanation,
         }
+
+    def validate(self, content):
+        with open(SCHEMA_FILE) as fp:
+            schema = json.load(fp)
+
+            jsonschema.validate(instance=content,
+                                schema=schema)
