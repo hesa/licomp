@@ -54,6 +54,7 @@ class CompatibilityStatus(Enum):
     DEPENDS = 43
     UNKNOWN = 44
     UNSUPPORTED = 45
+    MIXED = 46
 
     @staticmethod
     def string_to_compat_status(compat_status_string):
@@ -63,6 +64,7 @@ class CompatibilityStatus(Enum):
             "depends": CompatibilityStatus.DEPENDS,
             "unknown": CompatibilityStatus.UNKNOWN,
             "unsupported": CompatibilityStatus.UNSUPPORTED,
+            "mixed": CompatibilityStatus.MIXED,
             None: None,
         }
         return _map[compat_status_string]
@@ -75,6 +77,7 @@ class CompatibilityStatus(Enum):
             CompatibilityStatus.DEPENDS: "depends",
             CompatibilityStatus.UNKNOWN: "unknown",
             CompatibilityStatus.UNSUPPORTED: "unsupported",
+            CompatibilityStatus.MIXED: "mixed",
             None: None,
         }
         return _map[compat_status]

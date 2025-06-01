@@ -178,6 +178,10 @@ class LicompParser():
         except KeyError:
             return None, ReturnCodes.LICOMP_UNSUPPORTED_PROVISIONING.value, LicompFormatter.formatter(self.args.output_format).format_error(f'Provisioning {args.provisioning} not supported.')
 
+        # Remove leading and trailing white space
+        inbound = self.args.in_license.strip()
+        outbound = self.args.out_license.strip()
+
         # usecase and provisioning case are OK
         res = self.licomp.outbound_inbound_compatibility(outbound, inbound, usecase, provisioning=provisioning)
         if res['status'] == 'success':
