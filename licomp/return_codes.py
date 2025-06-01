@@ -16,6 +16,7 @@ class ReturnCodes(Enum):
     LICOMP_UNSUPPORTED_USECASE = 6
     LICOMP_UNSUPPORTED_PROVISIONING = 7
     LICOMP_UNSUPPORTED_MODIFICATION = 8
+    LICOMP_MIXED = 9
 
     LICOMP_LAST_SUCCESSFUL_CODE = 19
     # ... 18 saved for future
@@ -33,6 +34,7 @@ __comp_str_status_map__ = {
     CompatibilityStatus.compat_status_to_string(CompatibilityStatus.DEPENDS): ReturnCodes.LICOMP_DEPENDS,
     CompatibilityStatus.compat_status_to_string(CompatibilityStatus.UNKNOWN): ReturnCodes.LICOMP_UNKNOWN,
     CompatibilityStatus.compat_status_to_string(CompatibilityStatus.UNSUPPORTED): ReturnCodes.LICOMP_UNSUPPORTED_LICENSE,
+    CompatibilityStatus.compat_status_to_string(CompatibilityStatus.MIXED): ReturnCodes.LICOMP_MIXED,
 }
 
 __comp_status_str_map__ = {
@@ -41,6 +43,7 @@ __comp_status_str_map__ = {
     ReturnCodes.LICOMP_DEPENDS.value: CompatibilityStatus.compat_status_to_string(CompatibilityStatus.DEPENDS),
     ReturnCodes.LICOMP_UNKNOWN.value: CompatibilityStatus.compat_status_to_string(CompatibilityStatus.UNKNOWN),
     ReturnCodes.LICOMP_UNSUPPORTED_LICENSE.value: CompatibilityStatus.compat_status_to_string(CompatibilityStatus.UNSUPPORTED),
+    ReturnCodes.LICOMP_MIXED.value: CompatibilityStatus.compat_status_to_string(CompatibilityStatus.MIXED),
 }
 
 def compatibility_status_to_returncode(compat_status):
