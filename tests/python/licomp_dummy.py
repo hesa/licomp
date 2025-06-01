@@ -49,7 +49,7 @@ class DummyLicense(Licomp):
         return "DummyLicense"
     
     def version(self):
-        return "version sth"
+        return "0.0.0"
     
     def supported_licenses(self):
         return list(self.licenses.keys())
