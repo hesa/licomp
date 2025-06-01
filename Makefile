@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2024 Henrik Sandklef
+# SPDX-FileCopyrightText: 2025 Henrik Sandklef
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -28,7 +28,7 @@ reuse:
 lint:
 	flake8 licomp
 
-check: test clean build reuse lint
+check: test clean reuse lint build
 	@echo ""
 	@echo ""
 	@echo ""
