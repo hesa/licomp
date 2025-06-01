@@ -1,83 +1,95 @@
 {
   "$schema" : "http://json-schema.org/draft-07/schema#",
   "$id" : "http://spdx.org/rdf/terms",
-  "title" : "SPDX 2.2",
+  "title" : "Licomp Reply",
   "type" : "object",
   "properties" : {
     "status" : {
-      "type" : "string",
-      "description" : ""
+      "enum": [ "failure", "success" ],
+      "description" : "Overall status indicating if the compatibility check succeeded."
     },
     "status_details" : {
-      "type": "object",
-        "properties": {
-          "provisioning_status" : {
-            "type" : "string",
-            "description" : ""
-          },
-          "usecase_status" : {
-            "type" : "string",
-            "description" : ""
-          },
-          "license_supported_status" : {
-            "type" : "string",
-            "description" : ""
-          }
-        }
+      "type" : "object",
+      "properties" : {
+	"provisioning_status": {
+	  "enum": [ "failure", "success" ],
+          "description" : "Status indicating if the provisioning is supported."
+	},
+	"usecase_status": {
+	  "enum": [ "failure", "success" ],
+          "description" : "Status indicating if the usecase is supported."
+	},
+	"license_supported_status": {
+	  "enum": [ "failure", "success" ],
+          "description" : "Status indicating if the licenses are supported."
+	}
+      }
     },
     "outbound" : {
       "type" : "string",
-      "description" : ""
+      "minLength": 1,
+      "description" : "The outbound license"
     },
     "inbound" : {
       "type" : "string",
-      "description" : ""
+      "minLength": 1,
+      "description" : "The inbound license"
     },
     "usecase" : {
       "type" : "string",
-      "description" : ""
+      "enum": ["library", "compiler", "snippet", "tool", "test"],
+      "description" : "Usecase for the compatibility check, e.g. library (as in using the inbound licensed component as a library)"
     },
     "provisioning" : {
       "type" : "string",
-      "description" : ""
+      "enum": ["source-code-distribution", "binary-distribution", "local-use", "provide-service", "provide-webui"],
+      "description" : "The way the component is provided to the user for the compatibility check, e.g. binary-distribution"
     },
     "modification" : {
       "type" : "string",
-      "description" : ""
+      "description" : "Has the component been modified. Currently not used/implemented.",
+      "enum": [ "unmodified", "modified"]
     },
     "compatibility_status" : {
-      "type" : ["string", "null"],
+      "enum": [ "yes", "no", "depends", "unknown", "unsupported", null],
       "description" : ""
     },
     "explanation" : {
-      "type" : ["string", "null"],
-      "description" : ""
+      "type" : [ "string", "null" ],
+      "description" : "A text describing the compatiblity, e.g. how the compatibility was determined"
     },
     "api_version" : {
       "type" : "string",
-      "description" : ""
-    },
-    "data_url" : {
-      "type" : "string",
-      "description" : ""
-    },
-    "resource_url" : {
-      "type" : "string",
-      "description" : ""
+      "pattern": "^[0-9].[0-9](.[0-9]){0,1}$",
+      "description" : "The api version of the program providing the reply"
     },
     "resource_name" : {
       "type" : "string",
-      "description" : ""
+      "minLength": 10,
+      "description" : "The name of the program providing the reply, e.g. licomp-osadl"
     },
     "resource_version" : {
       "type" : "string",
-      "description" : ""
+      "pattern": "^[0-9].[0-9](.[0-9]){0,1}$",
+      "description" : "The versions of the program providing the reply, e.g. licomp-osadl"
     },
     "resource_disclaimer" : {
       "type" : "string",
-      "description" : ""
+      "minLength": 10,
+      "description" : "A disclaimer of the program providing the reply."
+    },
+    "data_url" : {
+      "type" : "string",
+      "minLength": 10,
+      "description" : "A URL pointing to the data used to provide the resulting compatibility."
+    },
+    "resource_url" : {
+      "type" : "string",
+      "minLength": 10,
+      "description" : "A URL pointing to the project page (or similar) for the program providing the resulting compatibility."
     }
   },
-  "required" : [ "status" ],
+  "required" : [ "status", "status_details", "outbound", "inbound", "usecase", "provisioning", "modification", "compatibility_status", "explanation", "api_version", "resource_name", "resource_version", "resource_disclaimer", "data_url", "resource_url"],
   "additionalProperties" : false  
 }
+
