@@ -30,3 +30,7 @@ License: GPL-3.0-or-later
 Files: licomp/data/reply_schema.json
 Copyright: Henrik Sandklef
 License: GPL-3.0-or-later
+
+Files: tests/replies/success.json
+Copyright: Henrik Sandklef
+License: GPL-3.0-or-later
