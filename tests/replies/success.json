@@ -1,0 +1,21 @@
+{
+  "status": "success",
+  "status_details": {
+    "provisioning_status": "success",
+    "usecase_status": "success",
+    "license_supported_status": "success"
+  },
+  "outbound": "BSD-3-Clause",
+  "inbound": "BSD-3-Clause",
+  "usecase": "library",
+  "provisioning": "binary-distribution",
+  "modification": "unmodified",
+  "compatibility_status": "yes",
+  "explanation": "Inbound and outbound license are the same: BSD-3-Clause",
+  "api_version": "0.3",
+  "resource_name": "DummyLicense",
+  "resource_version": "0.0.0",
+  "resource_disclaimer": "example disclaimer",
+  "data_url": "http://someplace",
+  "resource_url" : "http://somewhere"
+}
