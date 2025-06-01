@@ -8,7 +8,7 @@ from licomp.interface import CompatibilityStatus
 
 class ReturnCodes(Enum):
     LICOMP_OK = 0
-    LICOMP_INCONSISTENCY = 1
+    LICOMP_INCONSISTENCY = 1 # unused
     LICOMP_INCOMPATIBLE = 2
     LICOMP_DEPENDS = 3
     LICOMP_UNKNOWN = 4
