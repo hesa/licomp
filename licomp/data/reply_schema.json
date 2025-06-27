@@ -1,6 +1,6 @@
 {
   "$schema" : "http://json-schema.org/draft-07/schema#",
-  "$id" : "http://spdx.org/rdf/terms",
+  "$id" : "",
   "title" : "Licomp Reply",
   "type" : "object",
   "properties" : {
@@ -52,7 +52,7 @@
     },
     "compatibility_status" : {
       "enum": [ "yes", "no", "depends", "unknown", "unsupported", null],
-      "description" : ""
+      "description" : "The compatbility between the Outbound and Inbound license expressions"
     },
     "explanation" : {
       "type" : [ "string", "null" ],
