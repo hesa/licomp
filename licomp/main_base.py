@@ -4,6 +4,7 @@
 
 import argparse
 import json
+import yaml
 import logging
 import sys
 
@@ -37,6 +38,10 @@ class LicompFormatter():
             return JsonLicompFormatter()
         if fmt.lower() == 'text':
             return TextLicompFormatter()
+        if fmt.lower() == 'yaml':
+            return YamlLicompFormatter()
+        if fmt.lower() == 'yml':
+            return YamlLicompFormatter()
 
 class JsonLicompFormatter():
 
@@ -54,6 +59,26 @@ class JsonLicompFormatter():
 
     def format_error(self, error_string, verbose=False):
         return json.dumps({
+            'status': 'failure',
+            'message': error_string,
+        }, indent=4)
+
+class YamlLicompFormatter():
+
+    def format_compatibility(self, compatibility, verbose=False):
+        return yaml.safe_dump(compatibility, indent=4)
+
+    def format_licenses(self, licenses, verbose=False):
+        return yaml.safe_dump(licenses, indent=4)
+
+    def format_usecases(self, usecases, verbose=False):
+        return yaml.safe_dump(usecases, indent=4)
+
+    def format_provisionings(self, provisionings, verbose=False):
+        return yaml.safe_dump(provisionings, indent=4)
+
+    def format_error(self, error_string, verbose=False):
+        return yaml.safe_dump({
             'status': 'failure',
             'message': error_string,
         }, indent=4)
