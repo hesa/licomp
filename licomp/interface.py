@@ -88,6 +88,7 @@ class UseCase(Enum):
     SNIPPET = 53
     TOOL = 54
     TEST = 55
+    UNKNOWN = 100
 
     @staticmethod
     def string_to_usecase(usecase):
@@ -97,6 +98,7 @@ class UseCase(Enum):
             "snippet": UseCase.SNIPPET,
             "tool": UseCase.TOOL,
             "test": UseCase.TEST,
+            "unknown": UseCase.UNKNOWN,
         }
         return _map[usecase]
 
@@ -108,6 +110,7 @@ class UseCase(Enum):
             UseCase.SNIPPET: "snippet",
             UseCase.TOOL: "tool",
             UseCase.TEST: "test",
+            UseCase.UNKNOWN: "unknown",
         }
         return _map[usecase]
 
