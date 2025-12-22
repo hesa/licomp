@@ -32,6 +32,9 @@ class LicompFormatter():
     def format_error(self, error_string, verbose=False):
         return None
 
+    def format_display_compatibility(self, error_string, verbose=False):
+        return None
+
     @staticmethod
     def formatter(fmt):
         if fmt.lower() == 'json':
