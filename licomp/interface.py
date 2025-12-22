@@ -343,6 +343,23 @@ class Licomp:
                                         explanation,
                                         self.disclaimer())
 
+    def display_compatibility(self,
+                              licenses,
+                              usecase=UseCase.LIBRARY,
+                              provisioning=Provisioning.BIN_DIST,
+                              modification=Modification.UNMODIFIED):
+
+        compats = {}
+        for outbound in licenses:
+            compats[outbound] = {}
+            for inbound in licenses:
+                ret = self.outbound_inbound_compatibility(outbound,
+                                                          inbound,
+                                                          UseCase.LIBRARY,
+                                                          Provisioning.BIN_DIST)
+                compats[outbound][inbound] = ret
+        return compats
+
     def supported_licenses(self):
         return None
 
