@@ -249,6 +249,9 @@ class Licomp:
                 'license_supported_status': Status.status_to_string(license_supported_status),
             }
 
+            if explanations == []:
+                explanations = None
+
             ret = self.compatibility_reply(total_status,
                                            status_details,
                                            outbound,
