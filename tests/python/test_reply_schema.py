@@ -156,13 +156,13 @@ def test_compatibilities_raises():
     
 def test_explanation():
     reply = dict(success_reply)
-    for explanation in [ "a", "bla bla bla", None]:
+    for explanation in [ ["a"], ["a", "bla bla bla"], None]:
         reply['explanation'] = explanation
         _test_content(reply)
     
 def test_explanation_raises():
     reply = dict(success_reply)
-    for explanation in [True, False, []]:
+    for explanation in [True, False, "aaa"]:
         reply['explanation'] = explanation
         _test_content_raise(reply)
     

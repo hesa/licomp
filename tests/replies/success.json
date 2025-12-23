@@ -11,7 +11,7 @@
   "provisioning": "binary-distribution",
   "modification": "unmodified",
   "compatibility_status": "yes",
-  "explanation": "Inbound and outbound license are the same: BSD-3-Clause",
+  "explanation": ["Inbound and outbound license are the same: BSD-3-Clause"],
   "api_version": "0.3",
   "resource_name": "DummyLicense",
   "resource_version": "0.0.0",
