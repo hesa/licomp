@@ -216,7 +216,7 @@ class Licomp:
                 # Check if the licenses are the same
                 ret = self.__licenses_same(inbound, outbound, usecase, provisioning, modification)
                 if ret:
-                    explanation = ret
+                    explanations = ret
                     compat_status = CompatibilityStatus.COMPATIBLE
 
                 else:
@@ -260,7 +260,7 @@ class Licomp:
                                            provisioning,
                                            modification,
                                            compat_status,
-                                           explanation,
+                                           explanations,
                                            self.disclaimer())
             return ret
         except AttributeError as e:
