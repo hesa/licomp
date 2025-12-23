@@ -55,8 +55,18 @@
       "description" : "The compatbility between the Outbound and Inbound license expressions"
     },
     "explanation" : {
-      "type" : [ "string", "null" ],
-      "description" : "A text describing the compatiblity, e.g. how the compatibility was determined"
+      "anyOf": [
+        {
+          "type" : "array" ,
+          "items": {
+            "type" : "string"
+          },
+          "description" : "A list of texts describing the compatiblity, e.g. how the compatibility was determined"
+        },
+        {
+          "type": "null"
+        }
+      ]
     },
     "api_version" : {
       "type" : "string",
