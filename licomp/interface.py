@@ -216,7 +216,7 @@ class Licomp:
                 # Check if the licenses are the same
                 ret = self.__licenses_same(inbound, outbound, usecase, provisioning, modification)
                 if ret:
-                    explanations = ret
+                    explanations.append(ret)
                     compat_status = CompatibilityStatus.COMPATIBLE
 
                 else:
@@ -238,10 +238,9 @@ class Licomp:
                         pass
 
                     compat_status = response['compatibility_status']
-                    explanation = response['explanation']
+                    explanations.append(response['explanation'])
             else:
                 compat_status = None
-                explanation = None
 
             status_details = {
                 'provisioning_status': Status.status_to_string(provisioning_status),
