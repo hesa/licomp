@@ -238,7 +238,8 @@ class Licomp:
                         pass
 
                     compat_status = response['compatibility_status']
-                    explanations.append(response['explanation'])
+                    if response['explanation']:
+                        explanations.append(response['explanation'])
             else:
                 compat_status = None
 
