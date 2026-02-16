@@ -127,18 +127,25 @@ class LicompParser():
                                               epilog=epilog,
                                               formatter_class=argparse.RawTextHelpFormatter)
 
+        self.parser.add_argument('-d', '--debug',
+                                 action='store_true',
+                                 help='Enable debug output')
+
         self.parser.add_argument('-v', '--verbose',
-                                 action='store_true')
+                                 action='store_true',
+                                 help='Enable verbose output')
 
         self.parser.add_argument('-of', '--output-format',
                                  type=str,
                                  default='json')
 
         self.parser.add_argument('--name',
-                                 action='store_true')
+                                 action='store_true',
+                                 help='Output the name of the tool and exit.')
 
         self.parser.add_argument('--version',
-                                 action='store_true')
+                                 action='store_true',
+                                 help='Output the version of the tool and exit.')
 
         self.parser.add_argument('--usecase', '-u',
                                  type=str,
@@ -269,8 +276,8 @@ class LicompParser():
             self.parser.print_help(file=sys.stderr)
             sys.exit(1)
 
-        # if --verbose
-        if self.args.verbose:
+        # if --debug, enable DEBUG logging messages
+        if self.args.debug:
             logging.getLogger().setLevel(logging.DEBUG)
 
         # execute command
