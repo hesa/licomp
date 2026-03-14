@@ -1,4 +1,4 @@
-# We have moved to [codeberg](https://codeberg.org). Our new home: [codeberg.org/software-compliance-org](https://codeberg.org/software-compliance-org/licomp)
+# We have moved to [codeberg](https://codeberg.org). Our new home: [codeberg.org/software-compliance-org/licomp](https://codeberg.org/software-compliance-org/licomp)
 
 # licomp - License Compatibility
 
