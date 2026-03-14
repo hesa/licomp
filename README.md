@@ -1,3 +1,5 @@
+# We have moved to [codeberg](https://codeberg.org). Our new home: [codeberg.org/software-compliance-org](https://codeberg.org/software-compliance-org/licomp)
+
 # licomp - License Compatibility
 
 The licomp library provides an interface and code for various license compatibility
