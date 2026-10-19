@@ -205,7 +205,7 @@ class Licomp:
                 total_status = Status.FAILURE
 
             # Make sure both licenses are supported
-            ret = self.__licenses_supported(inbound, outbound, usecase, provisioning, modification)
+            ret = self.licenses_supported(inbound, outbound, usecase, provisioning, modification)
             if ret:
                 explanations.append(ret)
                 license_supported_status = Status.FAILURE
@@ -305,7 +305,7 @@ class Licomp:
             "resource_disclaimer": disclaimer,
         }
 
-    def __licenses_supported(self, inbound, outbound, usecase, provisioning, modification):
+    def licenses_supported(self, inbound, outbound, usecase, provisioning, modification):
         unsupported = set()
         if outbound not in self.supported_licenses():
             unsupported.add(outbound)
